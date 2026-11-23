@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:s="clr-namespace:HandloomFactory.App.Resources.Strings"
+             xmlns:vm="clr-namespace:HandloomFactory.App.ViewModels"
+             x:Class="HandloomFactory.App.Views.NewPinPage"
+             x:DataType="vm:NewPinViewModel">
+    <ScrollView>
+        <VerticalStackLayout Padding="20,40" Spacing="10">
+            <Label Text="{x:Static s:AppResources.NewPin_Title}" Style="{StaticResource Heading}" FontSize="28" />
+            <Label Text="{Binding Intro}" Style="{StaticResource Subtle}" Margin="0,0,0,12" />
+            <Label Text="{x:Static s:AppResources.Setup_Pin}" Style="{StaticResource SectionLabel}" />
+            <Entry Text="{Binding Pin}" MaxLength="4" Keyboard="Numeric" IsPassword="True" FontSize="28" />
+            <Label Text="{x:Static s:AppResources.Setup_ConfirmPin}" Style="{StaticResource SectionLabel}" />
+            <Entry Text="{Binding ConfirmPin}" MaxLength="4" Keyboard="Numeric" IsPassword="True" FontSize="28" />
+            <Button Text="{x:Static s:AppResources.Common_Save}" Command="{Binding SaveCommand}" Margin="0,24,0,0" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

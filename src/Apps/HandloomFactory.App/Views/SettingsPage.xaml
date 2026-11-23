@@ -16,6 +16,12 @@
                 </VerticalStackLayout>
             </Border>
 
+            <Label Text="{x:Static s:AppResources.Settings_Data}" Style="{StaticResource SectionLabel}" />
+            <Button Text="{x:Static s:AppResources.Settings_Export}" Command="{Binding ExportCommand}" IsEnabled="{Binding IsBusy, Converter={StaticResource Not}}" />
+            <Label Text="{x:Static s:AppResources.Settings_ExportNote}" Style="{StaticResource Subtle}" FontSize="14" />
+            <Button Text="{x:Static s:AppResources.Settings_Import}" Style="{StaticResource OutlineButton}" Command="{Binding ImportCommand}" IsEnabled="{Binding IsBusy, Converter={StaticResource Not}}" />
+
+            <Label Text="{x:Static s:AppResources.Settings_Title}" Style="{StaticResource SectionLabel}" />
             <Button Text="{x:Static s:AppResources.Settings_ChangePin}" Style="{StaticResource OutlineButton}" Command="{Binding ChangePinCommand}" />
             <Button Text="{x:Static s:AppResources.Settings_CheckUpdates}" Style="{StaticResource OutlineButton}" Command="{Binding CheckUpdatesCommand}" />
             <Button Text="{x:Static s:AppResources.Settings_Logout}" Style="{StaticResource OutlineButton}" Command="{Binding LogoutCommand}" />

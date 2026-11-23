@@ -20,7 +20,7 @@ public sealed partial class EntryRow : ObservableObject
         Text = row.SareeCount?.ToString(CultureInfo.InvariantCulture) ?? "";
         HasRate = row.Rate is not null;
         Note = row.Rate is { } rate
-            ? Show.PerSaree(rate) + (row.EnteredBy == EnteredBy.Employee ? " · " + AppResources.Entry_ByWorker : "")
+            ? Show.PerSaree(rate) + (row.EnteredBy == EnteredBy.Employee ? " · " + AppResources.Entry_ByWorker : "") + (row.WeekPaid ? " · " + AppResources.Entry_WeekPaid : "")
             : AppResources.Entry_NoRate;
     }
 

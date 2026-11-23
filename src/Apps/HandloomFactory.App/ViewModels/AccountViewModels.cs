@@ -23,14 +23,94 @@ public sealed class StartViewModel(AppHost host, IServiceProvider services, Dial
             }
         }
 
-        var accounts = services.GetRequiredService<AccountService>();
-        await Nav.GoAsync(await accounts.IsSetUpAsync() ? "//login" : "//setup");
+        await GoToEntryScreenAsync(services.GetRequiredService<AccountService>());
+    }
+
+    /// <summary>Setup (new phone), choose a PIN (data imported for an owner without a PIN here), or login.</summary>
+    public static async Task GoToEntryScreenAsync(AccountService accounts)
+    {
+        if (!await accounts.IsSetUpAsync())
+        {
+            await Nav.GoAsync("//setup");
+        }
+        else if (await accounts.OwnerNeedingPinAsync() is not null)
+        {
+            await Nav.GoAsync("//newpin");
+        }
+        else
+        {
+            await Nav.LoginAsync();
+        }
     }
 }
 
-/// <summary>First launch on the owner's phone: factory name, owner name, PIN twice.</summary>
-public sealed partial class SetupViewModel(AccountService accounts, Dialogs dialogs) : ObservableObject
+/// <summary>After importing data on a new phone: the owner chooses a PIN for this phone (PINs are never exported).</summary>
+public sealed partial class NewPinViewModel(AccountService accounts, Dialogs dialogs) : ObservableObject
 {
+    [ObservableProperty]
+    public partial string Intro { get; set; } = "";
+
+    [ObservableProperty]
+    public partial string Pin { get; set; } = "";
+
+    [ObservableProperty]
+    public partial string ConfirmPin { get; set; } = "";
+
+    public async Task LoadAsync() =>
+        Intro = Show.Format(AppResources.NewPin_Intro, (await accounts.OwnerNeedingPinAsync())?.FullName ?? "");
+
+    [RelayCommand]
+    private async Task SaveAsync()
+    {
+        var result = await accounts.SetFirstOwnerPinAsync(Pin, ConfirmPin);
+        if (!result.Ok)
+        {
+            await dialogs.ErrorAsync(result.Error);
+            return;
+        }
+
+        await Nav.HomeAsync();
+    }
+}
+
+/// <summary>First launch on the owner's phone: factory name, owner name, PIN twice, or restore from an export file.</summary>
+public sealed partial class SetupViewModel(AccountService accounts, DataService data, Dialogs dialogs) : ObservableObject
+{
+    /// <summary>New phone, existing factory: import an export file instead of starting empty (D18).</summary>
+    [RelayCommand]
+    private async Task RestoreAsync()
+    {
+        var text = await DataFiles.PickAsync();
+        if (text is null)
+        {
+            return;
+        }
+
+        var preview = data.Preview(text);
+        if (!preview.Ok)
+        {
+            await dialogs.ErrorAsync(preview.Error);
+            return;
+        }
+
+        var p = preview.Value!;
+        var range = p.FirstDay is { } first && p.LastDay is { } last ? Show.Format(AppResources.Settings_ImportRange, Show.DayWithYear(first), Show.DayWithYear(last)) : "";
+        var summary = Show.Format(AppResources.Settings_ImportSummary, p.FactoryName, p.ExportedAt.ToLocalTime().ToString("d MMM yyyy HH:mm", System.Globalization.CultureInfo.CurrentCulture), p.Workers, p.Entries, p.Payments, range);
+        if (!await dialogs.ConfirmAsync(AppResources.Settings_ImportTitle, summary, AppResources.Settings_ImportReplace))
+        {
+            return;
+        }
+
+        var imported = await data.ImportAsync(p.Data);
+        if (!imported.Ok)
+        {
+            await dialogs.ErrorAsync(imported.Error);
+            return;
+        }
+
+        await StartViewModel.GoToEntryScreenAsync(accounts);
+    }
+
     [ObservableProperty]
     public partial string FactoryName { get; set; } = "";
 
@@ -180,8 +260,95 @@ public sealed partial class LoginViewModel(AccountService accounts) : Observable
 }
 
 /// <summary>Settings: factory, version and updates, change PIN, log out.</summary>
-public sealed partial class SettingsViewModel(AppHost host, AccountService accounts, UpdateService updates, Dialogs dialogs, WorkflowContext context) : ObservableObject
+public sealed partial class SettingsViewModel(AppHost host, AccountService accounts, UpdateService updates, Dialogs dialogs, WorkflowContext context, DataService data) : ObservableObject
 {
+    private static string AppVersion => UpdateService.CurrentVersion.ToString(3);
+
+    [ObservableProperty]
+    public partial bool IsBusy { get; set; }
+
+    /// <summary>Export all data (D18) and share the file.</summary>
+    [RelayCommand]
+    private async Task ExportAsync()
+    {
+        if (IsBusy)
+        {
+            return;
+        }
+
+        IsBusy = true;
+        try
+        {
+            var result = await data.ExportAsync(AppVersion);
+            if (!result.Ok)
+            {
+                await dialogs.ErrorAsync(result.Error);
+                return;
+            }
+
+            await DataFiles.ShareAsync(result.Value!, (await context.TimeAsync()).Today);
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
+
+    /// <summary>Import (D18): pick a file, show what's in it, confirm, save a safety copy, replace everything, log in again.</summary>
+    [RelayCommand]
+    private async Task ImportAsync()
+    {
+        if (IsBusy)
+        {
+            return;
+        }
+
+        IsBusy = true;
+        try
+        {
+            var text = await DataFiles.PickAsync();
+            if (text is null)
+            {
+                return;
+            }
+
+            var preview = data.Preview(text);
+            if (!preview.Ok)
+            {
+                await dialogs.ErrorAsync(preview.Error);
+                return;
+            }
+
+            var p = preview.Value!;
+            var range = p.FirstDay is { } first && p.LastDay is { } last ? Show.Format(AppResources.Settings_ImportRange, Show.DayWithYear(first), Show.DayWithYear(last)) : "";
+            var summary = Show.Format(AppResources.Settings_ImportSummary, p.FactoryName, p.ExportedAt.ToLocalTime().ToString("d MMM yyyy HH:mm", System.Globalization.CultureInfo.CurrentCulture), p.Workers, p.Entries, p.Payments, range);
+            if (!await dialogs.ConfirmAsync(AppResources.Settings_ImportTitle, summary, AppResources.Settings_ImportReplace))
+            {
+                return;
+            }
+
+            var current = await data.ExportAsync(AppVersion, audit: false);
+            if (current.Ok)
+            {
+                await DataFiles.SaveSafetyCopyAsync(current.Value!);
+            }
+
+            var imported = await data.ImportAsync(p.Data);
+            if (!imported.Ok)
+            {
+                await dialogs.ErrorAsync(imported.Error);
+                return;
+            }
+
+            Dialogs.Toast(AppResources.Settings_Imported);
+            await StartViewModel.GoToEntryScreenAsync(accounts);
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
+
     [ObservableProperty]
     public partial string FactoryText { get; set; } = "";
 

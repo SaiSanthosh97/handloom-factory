@@ -47,6 +47,15 @@
                     </BindableLayout.ItemTemplate>
                 </VerticalStackLayout>
 
+                <Label Text="{x:Static s:AppResources.Worker_History}" Style="{StaticResource SectionLabel}" />
+                <VerticalStackLayout BindableLayout.ItemsSource="{Binding History}" Spacing="6">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate x:DataType="x:String">
+                            <Label Text="{Binding .}" FontSize="16" />
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </VerticalStackLayout>
+
                 <Border Style="{StaticResource Card}" Padding="16" Margin="0,8,0,0">
                     <VerticalStackLayout Spacing="8">
                         <Label Text="{x:Static s:AppResources.Worker_ChangeRate}" Style="{StaticResource Heading}" FontSize="20" />

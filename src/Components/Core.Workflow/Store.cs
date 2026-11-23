@@ -23,6 +23,10 @@ public sealed class ChangeSet
 
     public List<string> DeletedEntryIds { get; } = [];
 
+    public List<Payment> Payments { get; } = [];
+
+    public List<string> DeletedPaymentIds { get; } = [];
+
     public List<Credential> Credentials { get; } = [];
 
     public List<AuditEntry> Audit { get; } = [];
@@ -40,7 +44,16 @@ public interface IFactoryStore
     /// <param name="employeeId">Only this employee's entries, or everyone's when null.</param>
     Task<IReadOnlyList<ProductionEntry>> GetEntriesAsync(DateRange range, string? employeeId = null, CancellationToken cancellationToken = default);
 
+    /// <param name="employeeId">Only this employee's payments, or everyone's when null.</param>
+    Task<IReadOnlyList<Payment>> GetPaymentsAsync(string? employeeId = null, CancellationToken cancellationToken = default);
+
     Task<Credential?> GetCredentialAsync(string employeeId, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Import (D18): replaces every factory record with <paramref name="data"/> in one transaction. PINs are kept only
+    /// for people who are still in the new data; settings are kept.
+    /// </summary>
+    Task ReplaceAllAsync(FactoryData data, CancellationToken cancellationToken = default);
 
     /// <summary>Newest first.</summary>
     Task<IReadOnlyList<AuditEntry>> GetAuditAsync(int limit, CancellationToken cancellationToken = default);

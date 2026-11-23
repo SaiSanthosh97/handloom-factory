@@ -5,7 +5,8 @@ using HandloomFactory.Core.Reports;
 namespace HandloomFactory.Core.Workflow;
 
 /// <summary>One line on the "sarees for a day" screen.</summary>
-public sealed record DaySheetRow(Employee Employee, int? SareeCount, Money? Rate, EnteredBy? EnteredBy);
+/// <param name="WeekPaid">The week is already marked paid for this worker: a change becomes an adjustment on the next payment (D11).</param>
+public sealed record DaySheetRow(Employee Employee, int? SareeCount, Money? Rate, EnteredBy? EnteredBy, bool WeekPaid = false);
 
 public sealed record DaySheet(DateOnly Date, DateOnly Today, int MaxPerDay, IReadOnlyList<DaySheetRow> Rows)
 {
@@ -29,12 +30,14 @@ public sealed class ProductionService(WorkflowContext context)
         var today = (await context.TimeAsync(cancellationToken)).Today;
         var rates = new RateBook(await context.Store.GetRateChangesAsync(cancellationToken));
         var entries = (await context.Store.GetEntriesAsync(new DateRange(date, date), null, cancellationToken)).ToDictionary(e => e.EmployeeId);
+        var weekStart = Periods.PayWeek(date).Start;
+        var paid = (await context.Store.GetPaymentsAsync(null, cancellationToken)).Where(p => p.WeekStart == weekStart).Select(p => p.EmployeeId).ToHashSet();
         var rows = (await context.Store.GetEmployeesAsync(cancellationToken))
             .Where(e => e.IsWorker && (e.IsActive || entries.ContainsKey(e.Id)))
             .OrderBy(e => e.FullName, StringComparer.CurrentCultureIgnoreCase)
             .Select(e => entries.TryGetValue(e.Id, out var entry)
-                ? new DaySheetRow(e, entry.SareeCount, rates.RateOn(e.Id, date), entry.EnteredBy)
-                : new DaySheetRow(e, null, rates.RateOn(e.Id, date), null))
+                ? new DaySheetRow(e, entry.SareeCount, rates.RateOn(e.Id, date), entry.EnteredBy, paid.Contains(e.Id))
+                : new DaySheetRow(e, null, rates.RateOn(e.Id, date), null, paid.Contains(e.Id)))
             .ToList();
         return Result.Success(new DaySheet(date, today, factory?.MaxSareesPerDay ?? FactoryInfo.DefaultMaxSareesPerDay, rows));
     }

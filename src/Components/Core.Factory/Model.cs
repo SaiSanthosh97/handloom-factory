@@ -113,4 +113,8 @@ public static class AuditActions
     public const string EntrySaved = "EntrySaved";
     public const string EntryDeleted = "EntryDeleted";
     public const string PinChanged = "PinChanged";
+    public const string PaymentMarked = "PaymentMarked";
+    public const string PaymentUnmarked = "PaymentUnmarked";
+    public const string DataExported = "DataExported";
+    public const string DataImported = "DataImported";
 }

@@ -96,6 +96,44 @@ public sealed class AccountService(WorkflowContext context)
 
     public void Logout() => context.Session.SignOut();
 
+    /// <summary>
+    /// After importing data on a new phone the owner has no PIN here yet (PINs are never exported). Returns that owner,
+    /// or null when every active owner has a PIN.
+    /// </summary>
+    public async Task<Employee?> OwnerNeedingPinAsync(CancellationToken cancellationToken = default)
+    {
+        foreach (var admin in (await context.Store.GetEmployeesAsync(cancellationToken)).Where(e => e.Role == Role.Admin && e.IsActive))
+        {
+            if (await context.Store.GetCredentialAsync(admin.Id, cancellationToken) is not null)
+            {
+                return null; // someone can already log in as owner
+            }
+        }
+
+        return (await context.Store.GetEmployeesAsync(cancellationToken)).FirstOrDefault(e => e.Role == Role.Admin && e.IsActive);
+    }
+
+    /// <summary>Sets the first PIN for an owner who has none on this phone (after an import) and logs them in.</summary>
+    public async Task<Result> SetFirstOwnerPinAsync(string pin, string confirmPin, CancellationToken cancellationToken = default)
+    {
+        if (await OwnerNeedingPinAsync(cancellationToken) is not { } owner)
+        {
+            return Result.Fail(ErrorCode.PinAlreadySet);
+        }
+
+        if (PinError(pin, confirmPin) is { } error)
+        {
+            return Result.Fail(error);
+        }
+
+        var changes = new ChangeSet();
+        changes.Credentials.Add(new Credential(owner.Id, Pins.Hash(pin), 0, null));
+        changes.Audit.Add(new AuditEntry(Ids.New(), context.Now, owner.Id, AuditActions.PinChanged, "Employee", owner.Id, null, null));
+        await context.Store.CommitAsync(changes, cancellationToken);
+        context.Session.SignIn(owner);
+        return Result.Success();
+    }
+
     /// <summary>The logged-in person changes their own PIN (the current PIN is required).</summary>
     public async Task<Result> ChangePinAsync(string currentPin, string newPin, string confirmPin, CancellationToken cancellationToken = default)
     {

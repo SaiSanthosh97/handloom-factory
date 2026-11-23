@@ -21,7 +21,7 @@ Requirements: [requirements.md](requirements.md) · Change log: [docs/CHANGES.md
 | Version | What you can test |
 |---|---|
 | 0.1.0 | Owner phone only: set up the factory, PIN login, add, edit and disable workers with rates (including rate changes), enter sarees for any day, dashboard, weekly report, update alerts |
-| 0.2.0 (next) | Weekly payments (mark paid), worker history, monthly and yearly reports, export all data and import it again |
+| 0.2.0 | Weekly payments (mark paid), worker history, monthly and yearly reports, export all data and import it again |
 | 0.3.0 | Worker phones (QR link, worker PIN login, worker enters today's sarees), ntfy sync |
 | 0.4.0 | CSV reports, audit log screen |
 | 0.5.0 | Push notifications, polish |

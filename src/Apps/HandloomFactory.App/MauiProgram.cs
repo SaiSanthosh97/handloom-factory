@@ -42,6 +42,8 @@ public static class MauiProgram
         services.AddSingleton<EmployeeService>();
         services.AddSingleton<ProductionService>();
         services.AddSingleton<ReportService>();
+        services.AddSingleton<PaymentService>();
+        services.AddSingleton<DataService>();
 
         // Screens: tabs are singletons (they keep their place); pushed and start pages are fresh each time.
         services.AddTransient<StartViewModel>();
@@ -50,6 +52,8 @@ public static class MauiProgram
         services.AddTransient<SetupPage>();
         services.AddTransient<LoginViewModel>();
         services.AddTransient<LoginPage>();
+        services.AddTransient<NewPinViewModel>();
+        services.AddTransient<NewPinPage>();
         services.AddSingleton<HomeViewModel>();
         services.AddSingleton<HomePage>();
         services.AddSingleton<EntryViewModel>();

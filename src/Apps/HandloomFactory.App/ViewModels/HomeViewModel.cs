@@ -13,13 +13,18 @@ public sealed partial class HomeViewModel : ObservableObject
     private readonly ReportService _reports;
     private readonly UpdateService _updates;
     private readonly Dialogs _dialogs;
+    private readonly PaymentService _payments;
+    private readonly ReportViewModel _reportPage;
+    private DateOnly? _oldestDue;
 
-    public HomeViewModel(AppHost host, ReportService reports, UpdateService updates, Dialogs dialogs)
+    public HomeViewModel(AppHost host, ReportService reports, UpdateService updates, Dialogs dialogs, PaymentService payments, ReportViewModel reportPage)
     {
         _host = host;
         _reports = reports;
         _updates = updates;
         _dialogs = dialogs;
+        _payments = payments;
+        _reportPage = reportPage;
         updates.Changed += () => MainThread.BeginInvokeOnMainThread(RefreshUpdateBanner);
     }
 
@@ -95,6 +100,29 @@ public sealed partial class HomeViewModel : ObservableObject
         MonthSarees = Show.Sarees(d.MonthSarees);
         MonthWages = Show.Format(AppResources.Home_Wages, d.MonthWages);
         WorkersText = Show.Format(AppResources.Home_ActiveWorkers, d.ActiveEmployees);
+
+        var due = (await _payments.DueAsync()).Value;
+        HasDue = due is { Count: > 0 };
+        DueText = due is null ? "" : Show.Format(AppResources.Home_DueText, due.Total, due.Count);
+        _oldestDue = due?.OldestWeekStart;
+    }
+
+    [ObservableProperty]
+    public partial bool HasDue { get; set; }
+
+    [ObservableProperty]
+    public partial string DueText { get; set; } = "";
+
+    /// <summary>Opens the payments (week report) at the oldest unpaid week.</summary>
+    [RelayCommand]
+    private Task OpenDueAsync()
+    {
+        if (_oldestDue is { } week)
+        {
+            _reportPage.ShowWeek(week);
+        }
+
+        return Nav.GoAsync("//main/reports");
     }
 
     private void RefreshUpdateBanner()

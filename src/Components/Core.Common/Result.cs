@@ -19,6 +19,13 @@ public enum ErrorCode
     NoRateOnDate,
     AlreadySetUp,
     PhoneInvalid,
+    ImportInvalid,
+    ImportTooNew,
+    AlreadyPaid,
+    NotPaid,
+    NothingToPay,
+    PaidDateInvalid,
+    PinAlreadySet,
 }
 
 public sealed record Error(ErrorCode Code, string? Detail = null);

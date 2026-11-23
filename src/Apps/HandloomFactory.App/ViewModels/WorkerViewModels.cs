@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.Input;
 using HandloomFactory.App.Resources.Strings;
 using HandloomFactory.App.Services;
 using HandloomFactory.Core.Common;
+using HandloomFactory.Core.Factory;
 using HandloomFactory.Core.Workflow;
 
 namespace HandloomFactory.App.ViewModels;
@@ -40,11 +41,14 @@ public sealed partial class WorkersViewModel(EmployeeService employees) : Observ
 }
 
 /// <summary>Add a worker, or view/edit one: name, phone, rate (with history), this week/month, disable/enable.</summary>
-public sealed partial class WorkerViewModel(EmployeeService employees, ReportService reports, Dialogs dialogs) : ObservableObject, IQueryAttributable
+public sealed partial class WorkerViewModel(EmployeeService employees, ReportService reports, PaymentService payments, Dialogs dialogs) : ObservableObject, IQueryAttributable
 {
     private string? _id;
 
     public ObservableCollection<string> RateHistory { get; } = [];
+
+    /// <summary>The last 12 pay weeks, newest first: sarees, earnings and whether paid.</summary>
+    public ObservableCollection<string> History { get; } = [];
 
     [ObservableProperty]
     public partial bool IsNew { get; set; } = true;
@@ -126,6 +130,21 @@ public sealed partial class WorkerViewModel(EmployeeService employees, ReportSer
         foreach (var change in d.RateHistory)
         {
             RateHistory.Add(Show.Format(AppResources.Worker_RateFromItem, change.Rate, Show.DayWithYear(change.EffectiveFrom)));
+        }
+
+        History.Clear();
+        foreach (var week in (await payments.HistoryAsync(_id)).Value ?? [])
+        {
+            var state = week.Status switch
+            {
+                PaymentStatus.Paid => Show.Format(AppResources.Worker_HistoryPaid, week.Total, Show.Day(week.PaidDate!.Value)),
+                PaymentStatus.Pending => Show.Format(AppResources.Worker_HistoryPending, week.Total),
+                _ => AppResources.Worker_HistoryNothing,
+            };
+            var line = week.Status == PaymentStatus.Nothing
+                ? Show.Format(AppResources.Worker_HistoryLine, Show.Range(week.Week), state)
+                : Show.Format(AppResources.Worker_HistoryLine, Show.Range(week.Week), $"{Show.Sarees(week.Sarees)} · {state}");
+            History.Add(line);
         }
     }
 

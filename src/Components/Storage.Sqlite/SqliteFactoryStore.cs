@@ -35,6 +35,46 @@ public sealed class SqliteFactoryStore(FactoryDatabase db) : IFactoryStore
             r => new ProductionEntry(r.GetString(0), r.GetString(1), ParseDay(r.GetString(2)), r.GetInt32(3), (EnteredBy)r.GetInt32(4), ParseUtc(r.GetString(5)), ParseUtc(r.GetString(6))),
             ("$from", Day(range.Start)), ("$to", Day(range.End)), ("$employee", employeeId)), cancellationToken);
 
+    public Task<IReadOnlyList<Payment>> GetPaymentsAsync(string? employeeId = null, CancellationToken cancellationToken = default) =>
+        db.UseAsync<IReadOnlyList<Payment>>(c => c.Query(
+            """
+            SELECT id, employee_id, week_start, week_end, sarees, earnings_paise, adjustment_paise, total_paise, paid_date, marked_at
+            FROM payment WHERE ($employee IS NULL OR employee_id = $employee) ORDER BY week_start, employee_id;
+            """,
+            r => new Payment(r.GetString(0), r.GetString(1), ParseDay(r.GetString(2)), ParseDay(r.GetString(3)), r.GetInt32(4),
+                new Money(r.GetInt64(5)), new Money(r.GetInt64(6)), new Money(r.GetInt64(7)), ParseDay(r.GetString(8)), ParseUtc(r.GetString(9))),
+            ("$employee", employeeId)), cancellationToken);
+
+    /// <summary>Deletes and rewrites everything in ONE transaction: a failure leaves the phone's data exactly as it was.</summary>
+    public Task ReplaceAllAsync(FactoryData data, CancellationToken cancellationToken = default) =>
+        db.InTransactionAsync((c, t) =>
+        {
+            // Keep the PINs (and so the rows) of people who are in the new data: re-importing on the same phone keeps
+            // the owner's PIN. Everyone else's PIN goes.
+            c.Run("CREATE TEMP TABLE IF NOT EXISTS import_keep (id TEXT PRIMARY KEY); DELETE FROM import_keep;", t);
+            foreach (var employee in data.Employees)
+            {
+                c.Run("INSERT OR IGNORE INTO import_keep (id) VALUES ($id);", t, ("$id", employee.Id));
+            }
+
+            c.Run("DELETE FROM credential WHERE employee_id NOT IN (SELECT id FROM import_keep);", t);
+            foreach (var table in new[] { "payment", "production_entry", "rate_change", "audit_log", "factory" })
+            {
+                c.Run($"DELETE FROM {table};", t);
+            }
+
+            c.Run("DELETE FROM employee WHERE id NOT IN (SELECT id FROM import_keep);", t);
+            c.Run("DELETE FROM import_keep;", t);
+
+            var changes = new ChangeSet { Factory = data.Factory };
+            changes.Employees.AddRange(data.Employees);
+            changes.Rates.AddRange(data.Rates);
+            changes.Entries.AddRange(data.Entries);
+            changes.Payments.AddRange(data.Payments);
+            changes.Audit.AddRange(data.Audit);
+            Write(c, t, changes);
+        }, cancellationToken);
+
     public Task<Credential?> GetCredentialAsync(string employeeId, CancellationToken cancellationToken = default) =>
         db.UseAsync(c => c.Query(
             "SELECT employee_id, pin_hash, pin_salt, pin_iterations, failed_attempts, locked_until FROM credential WHERE employee_id = $id;",
@@ -48,8 +88,10 @@ public sealed class SqliteFactoryStore(FactoryDatabase db) : IFactoryStore
             ("$limit", limit)), cancellationToken);
 
     public Task CommitAsync(ChangeSet changes, CancellationToken cancellationToken = default) =>
-        db.InTransactionAsync((c, t) =>
-        {
+        db.InTransactionAsync((c, t) => Write(c, t, changes), cancellationToken);
+
+    private static void Write(SqliteConnection c, SqliteTransaction t, ChangeSet changes)
+    {
             if (changes.Factory is { } f)
             {
                 c.Run(
@@ -118,7 +160,25 @@ public sealed class SqliteFactoryStore(FactoryDatabase db) : IFactoryStore
                     """,
                     t, ("$id", a.Id), ("$at", Utc(a.At)), ("$actor", a.ActorId), ("$action", a.Action), ("$type", a.TargetType), ("$target", a.TargetId), ("$old", a.OldValue), ("$new", a.NewValue));
             }
-        }, cancellationToken);
+
+            foreach (var p in changes.Payments)
+            {
+                c.Run(
+                    """
+                    INSERT INTO payment (id, employee_id, week_start, week_end, sarees, earnings_paise, adjustment_paise, total_paise, paid_date, marked_at)
+                    VALUES ($id, $employee, $start, $end, $sarees, $earnings, $adjustment, $total, $paid, $marked)
+                    ON CONFLICT(id) DO UPDATE SET sarees = $sarees, earnings_paise = $earnings, adjustment_paise = $adjustment,
+                        total_paise = $total, paid_date = $paid, marked_at = $marked;
+                    """,
+                    t, ("$id", p.Id), ("$employee", p.EmployeeId), ("$start", Day(p.WeekStart)), ("$end", Day(p.WeekEnd)), ("$sarees", p.Sarees),
+                    ("$earnings", p.Earnings.Paise), ("$adjustment", p.Adjustment.Paise), ("$total", p.Total.Paise), ("$paid", Day(p.PaidDate)), ("$marked", Utc(p.MarkedAt)));
+            }
+
+            foreach (var id in changes.DeletedPaymentIds)
+            {
+                c.Run("DELETE FROM payment WHERE id = $id;", t, ("$id", id));
+            }
+    }
 }
 
 /// <summary>Small app preferences (last update check, language…) kept in the encrypted database.</summary>

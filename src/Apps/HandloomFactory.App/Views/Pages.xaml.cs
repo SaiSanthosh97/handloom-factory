@@ -212,3 +212,21 @@ public partial class SettingsPage : ContentPage
         }
     }
 }
+
+/// <summary>After an import on a new phone: the owner chooses a PIN here.</summary>
+public partial class NewPinPage : ContentPage
+{
+    private readonly NewPinViewModel _viewModel;
+
+    public NewPinPage(NewPinViewModel viewModel)
+    {
+        InitializeComponent();
+        BindingContext = _viewModel = viewModel;
+    }
+
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+        await _viewModel.LoadAsync();
+    }
+}

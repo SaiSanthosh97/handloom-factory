@@ -12,6 +12,7 @@
     <ShellContent Route="start" ContentTemplate="{DataTemplate views:StartPage}" Shell.NavBarIsVisible="False" />
     <ShellContent Route="setup" ContentTemplate="{DataTemplate views:SetupPage}" Shell.NavBarIsVisible="False" />
     <ShellContent Route="login" ContentTemplate="{DataTemplate views:LoginPage}" Shell.NavBarIsVisible="False" />
+    <ShellContent Route="newpin" ContentTemplate="{DataTemplate views:NewPinPage}" Shell.NavBarIsVisible="False" />
 
     <TabBar Route="main">
         <ShellContent Title="{x:Static s:AppResources.Tab_Home}" Route="home" ContentTemplate="{DataTemplate views:HomePage}">

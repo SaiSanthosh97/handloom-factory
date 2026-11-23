@@ -57,11 +57,18 @@ public static class ErrorText
             ErrorCode.NoRateOnDate => AppResources.Error_NoRateOnDate,
             ErrorCode.AlreadySetUp => AppResources.Error_AlreadySetUp,
             ErrorCode.PhoneInvalid => AppResources.Error_PhoneInvalid,
+            ErrorCode.ImportInvalid => AppResources.Error_ImportInvalid,
+            ErrorCode.ImportTooNew => AppResources.Error_ImportTooNew,
+            ErrorCode.AlreadyPaid => AppResources.Error_AlreadyPaid,
+            ErrorCode.NotPaid => AppResources.Error_NotPaid,
+            ErrorCode.NothingToPay => AppResources.Error_NothingToPay,
+            ErrorCode.PaidDateInvalid => AppResources.Error_PaidDateInvalid,
+            ErrorCode.PinAlreadySet => AppResources.Error_PinAlreadySet,
             _ => AppResources.Common_Error,
         };
 
         // Day-entry errors name the worker in Detail.
-        return error?.Detail is { Length: > 0 } who && error.Code is ErrorCode.CountOutOfRange or ErrorCode.NoRateOnDate or ErrorCode.FutureDate
+        return error?.Detail is { Length: > 0 } who && error.Code is ErrorCode.CountOutOfRange or ErrorCode.NoRateOnDate or ErrorCode.FutureDate or ErrorCode.AlreadyPaid or ErrorCode.NothingToPay
             ? string.Format(CultureInfo.CurrentCulture, AppResources.Error_ForWorker, who, text)
             : text;
     }

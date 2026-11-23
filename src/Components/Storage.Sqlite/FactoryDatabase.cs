@@ -124,6 +124,16 @@ internal static class Migrations
 
         CREATE TABLE settings (key TEXT PRIMARY KEY, value TEXT NOT NULL);
         """,
+
+        // 2 (v0.2.0): weekly payments (only weeks marked paid are stored; pending weeks are computed)
+        """
+        CREATE TABLE payment (
+            id TEXT PRIMARY KEY, employee_id TEXT NOT NULL REFERENCES employee(id), week_start TEXT NOT NULL,
+            week_end TEXT NOT NULL, sarees INTEGER NOT NULL, earnings_paise INTEGER NOT NULL, adjustment_paise INTEGER NOT NULL,
+            total_paise INTEGER NOT NULL, paid_date TEXT NOT NULL, marked_at TEXT NOT NULL,
+            UNIQUE (employee_id, week_start));
+        CREATE INDEX ix_payment_week ON payment (week_start);
+        """,
     ];
 
     public static int Latest => Steps.Length;

@@ -18,7 +18,18 @@ public sealed class Phone : IDisposable
         Employees = new EmployeeService(Context);
         Production = new ProductionService(Context);
         Reports = new ReportService(Context);
+        Payments = new PaymentService(Context);
+        Data = new DataService(Context);
     }
+
+    public PaymentService Payments { get; }
+
+    public DataService Data { get; }
+
+    public Employee Owner => Store.GetEmployeesAsync().Result.Single(e => e.Role == Role.Admin);
+
+    public Task EnterAsync(Employee worker, DateOnly day, int? count) =>
+        Production.SaveDayAsync(day, new Dictionary<string, int?> { [worker.Id] = count });
 
     public static DateOnly Today => new(2026, 11, 23);
 
