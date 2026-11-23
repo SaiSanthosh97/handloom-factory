@@ -17,4 +17,17 @@
 
 	<!-- In-app updates from GitHub Releases ("Install unknown apps" is asked once). -->
 	<uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+
+	<!-- Background sync about every 15 minutes, kept after a restart (0.3.0). -->
+	<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
+	<!-- A worker's phone photographs the owner's link QR code (read on the phone). Asked only when used. -->
+	<uses-permission android:name="android.permission.CAMERA" />
+	<uses-feature android:name="android.hardware.camera" android:required="false" />
+
+	<queries>
+		<intent>
+			<action android:name="android.media.action.IMAGE_CAPTURE" />
+		</intent>
+	</queries>
 </manifest>

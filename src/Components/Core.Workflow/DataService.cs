@@ -76,7 +76,7 @@ public sealed class DataService(WorkflowContext context)
 
     /// <summary>
     /// Replaces everything with the file's data and logs out. If the owner in the file has no PIN on this phone
-    /// (a new phone), the app asks them to choose one (<see cref="AccountService.OwnerNeedingPinAsync"/>).
+    /// (a new phone), the app asks them to choose one (<see cref="AccountService.PersonNeedingPinAsync"/>).
     /// </summary>
     public async Task<Result> ImportAsync(FactoryData data, CancellationToken cancellationToken = default)
     {

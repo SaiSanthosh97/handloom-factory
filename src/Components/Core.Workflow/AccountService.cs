@@ -100,23 +100,29 @@ public sealed class AccountService(WorkflowContext context)
     /// After importing data on a new phone the owner has no PIN here yet (PINs are never exported). Returns that owner,
     /// or null when every active owner has a PIN.
     /// </summary>
-    public async Task<Employee?> OwnerNeedingPinAsync(CancellationToken cancellationToken = default)
+    /// <remarks>
+    /// On a worker's phone (which holds no owner record) it is the worker, right after linking (TD-03): the phone
+    /// received their data from the owner and they choose their PIN.
+    /// </remarks>
+    public async Task<Employee?> PersonNeedingPinAsync(CancellationToken cancellationToken = default)
     {
-        foreach (var admin in (await context.Store.GetEmployeesAsync(cancellationToken)).Where(e => e.Role == Role.Admin && e.IsActive))
+        var people = (await context.Store.GetEmployeesAsync(cancellationToken)).Where(e => e.IsActive).ToList();
+        var candidates = people.Any(e => e.Role == Role.Admin) ? people.Where(e => e.Role == Role.Admin).ToList() : people;
+        foreach (var person in candidates)
         {
-            if (await context.Store.GetCredentialAsync(admin.Id, cancellationToken) is not null)
+            if (await context.Store.GetCredentialAsync(person.Id, cancellationToken) is not null)
             {
-                return null; // someone can already log in as owner
+                return null; // someone can already log in
             }
         }
 
-        return (await context.Store.GetEmployeesAsync(cancellationToken)).FirstOrDefault(e => e.Role == Role.Admin && e.IsActive);
+        return candidates.FirstOrDefault();
     }
 
     /// <summary>Sets the first PIN for an owner who has none on this phone (after an import) and logs them in.</summary>
-    public async Task<Result> SetFirstOwnerPinAsync(string pin, string confirmPin, CancellationToken cancellationToken = default)
+    public async Task<Result> SetFirstPinAsync(string pin, string confirmPin, CancellationToken cancellationToken = default)
     {
-        if (await OwnerNeedingPinAsync(cancellationToken) is not { } owner)
+        if (await PersonNeedingPinAsync(cancellationToken) is not { } owner)
         {
             return Result.Fail(ErrorCode.PinAlreadySet);
         }

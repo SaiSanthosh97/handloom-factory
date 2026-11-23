@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:s="clr-namespace:HandloomFactory.App.Resources.Strings"
+             xmlns:vm="clr-namespace:HandloomFactory.App.ViewModels"
+             x:Class="HandloomFactory.App.Views.LinkPhonePage"
+             x:DataType="vm:LinkPhoneViewModel"
+             Title="{Binding Title}">
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="12">
+            <Label Text="{x:Static s:AppResources.Link_Steps}" Style="{StaticResource Subtle}" IsVisible="{Binding IsWaiting}" />
+
+            <!-- White background so the QR code scans in dark mode too -->
+            <Border BackgroundColor="White" StrokeThickness="0" StrokeShape="RoundRectangle 12" Padding="12" HorizontalOptions="Center" IsVisible="{Binding IsWaiting}">
+                <Image Source="{Binding Qr}" WidthRequest="280" HeightRequest="280" />
+            </Border>
+
+            <Label Text="{Binding Status}" FontFamily="OpenSansSemibold" FontSize="20" HorizontalTextAlignment="Center">
+                <Label.Triggers>
+                    <DataTrigger TargetType="Label" Binding="{Binding IsLinked}" Value="True">
+                        <Setter Property="TextColor" Value="{StaticResource Ok}" />
+                    </DataTrigger>
+                </Label.Triggers>
+            </Label>
+            <ActivityIndicator IsRunning="{Binding IsWaiting}" IsVisible="{Binding IsWaiting}" Color="{StaticResource Primary}" />
+
+            <Label Text="{x:Static s:AppResources.Link_NotTogether}" Style="{StaticResource Subtle}" Margin="0,12,0,0" IsVisible="{Binding IsWaiting}" />
+            <Button Text="{x:Static s:AppResources.Link_ShareCode}" Style="{StaticResource OutlineButton}" Command="{Binding ShareCodeCommand}" IsVisible="{Binding IsWaiting}" />
+            <Label Text="{x:Static s:AppResources.Link_ShareWarning}" Style="{StaticResource Subtle}" FontSize="14" IsVisible="{Binding IsWaiting}" />
+
+            <Button Text="{x:Static s:AppResources.Common_OK}" Command="{Binding DoneCommand}" IsVisible="{Binding IsLinked}" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

@@ -13,6 +13,7 @@
     <ShellContent Route="setup" ContentTemplate="{DataTemplate views:SetupPage}" Shell.NavBarIsVisible="False" />
     <ShellContent Route="login" ContentTemplate="{DataTemplate views:LoginPage}" Shell.NavBarIsVisible="False" />
     <ShellContent Route="newpin" ContentTemplate="{DataTemplate views:NewPinPage}" Shell.NavBarIsVisible="False" />
+    <ShellContent Route="join" ContentTemplate="{DataTemplate views:JoinPage}" Shell.NavBarIsVisible="False" />
 
     <TabBar Route="main">
         <ShellContent Title="{x:Static s:AppResources.Tab_Home}" Route="home" ContentTemplate="{DataTemplate views:HomePage}">
@@ -28,6 +29,16 @@
             <ShellContent.Icon><FontImageSource Glyph="∑" Size="22" /></ShellContent.Icon>
         </ShellContent>
         <ShellContent Title="{x:Static s:AppResources.Tab_Settings}" Route="settings" ContentTemplate="{DataTemplate views:SettingsPage}">
+            <ShellContent.Icon><FontImageSource Glyph="⚙" Size="22" /></ShellContent.Icon>
+        </ShellContent>
+    </TabBar>
+
+    <!-- A worker's own phone (0.3.0): only their own data. -->
+    <TabBar Route="worker">
+        <ShellContent Title="{x:Static s:AppResources.Tab_Home}" Route="whome" ContentTemplate="{DataTemplate views:WorkerHomePage}">
+            <ShellContent.Icon><FontImageSource Glyph="🏠" Size="22" /></ShellContent.Icon>
+        </ShellContent>
+        <ShellContent Title="{x:Static s:AppResources.Tab_Settings}" Route="wsettings" ContentTemplate="{DataTemplate views:SettingsPage}">
             <ShellContent.Icon><FontImageSource Glyph="⚙" Size="22" /></ShellContent.Icon>
         </ShellContent>
     </TabBar>

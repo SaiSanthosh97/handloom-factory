@@ -21,11 +21,14 @@ public sealed class ChangeSet
 
     public List<ProductionEntry> Entries { get; } = [];
 
-    public List<string> DeletedEntryIds { get; } = [];
+    public List<ProductionEntry> DeletedEntries { get; } = [];
 
     public List<Payment> Payments { get; } = [];
 
-    public List<string> DeletedPaymentIds { get; } = [];
+    public List<Payment> DeletedPayments { get; } = [];
+
+    /// <summary>Sync messages to send because of this change (written in the same transaction, sent later).</summary>
+    public List<OutboxItem> Outbox { get; } = [];
 
     public List<Credential> Credentials { get; } = [];
 
@@ -84,3 +87,9 @@ public sealed class UserSession
         Changed?.Invoke();
     }
 }
+
+/// <summary>
+/// One record to send to one phone (TD-03): <paramref name="Channel"/> is the worker's employee id (each worker has
+/// one private channel with the owner). <paramref name="Type"/> and <paramref name="Data"/> are the sync record.
+/// </summary>
+public sealed record OutboxItem(string Channel, string Type, string Data);

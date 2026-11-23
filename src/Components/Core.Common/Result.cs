@@ -26,6 +26,10 @@ public enum ErrorCode
     NothingToPay,
     PaidDateInvalid,
     PinAlreadySet,
+    InviteInvalid,
+    InviteExpired,
+    NoInternet,
+    TodaySetByOwner,
 }
 
 public sealed record Error(ErrorCode Code, string? Detail = null);

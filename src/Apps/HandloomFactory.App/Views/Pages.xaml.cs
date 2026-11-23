@@ -230,3 +230,77 @@ public partial class NewPinPage : ContentPage
         await _viewModel.LoadAsync();
     }
 }
+
+/// <summary>Owner: the QR code that links a worker's phone; stops checking when left.</summary>
+public partial class LinkPhonePage : ContentPage
+{
+    private readonly LinkPhoneViewModel _viewModel;
+
+    public LinkPhonePage(LinkPhoneViewModel viewModel)
+    {
+        InitializeComponent();
+        BindingContext = _viewModel = viewModel;
+    }
+
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+        DeviceDisplay.Current.KeepScreenOn = true; // the worker needs time to scan
+        await _viewModel.StartAsync();
+    }
+
+    protected override async void OnDisappearing()
+    {
+        base.OnDisappearing();
+        DeviceDisplay.Current.KeepScreenOn = false;
+        await _viewModel.StopAsync();
+    }
+}
+
+/// <summary>Worker: link this phone (scan or paste), then wait for the owner's phone.</summary>
+public partial class JoinPage : ContentPage
+{
+    private readonly JoinViewModel _viewModel;
+
+    public JoinPage(JoinViewModel viewModel)
+    {
+        InitializeComponent();
+        BindingContext = _viewModel = viewModel;
+    }
+
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+        await _viewModel.LoadAsync();
+    }
+
+    protected override void OnDisappearing()
+    {
+        base.OnDisappearing();
+        _viewModel.Stop();
+    }
+}
+
+/// <summary>The worker's own home screen.</summary>
+public partial class WorkerHomePage : ContentPage
+{
+    private readonly WorkerHomeViewModel _viewModel;
+    private readonly UpdateService _updates;
+
+    public WorkerHomePage(WorkerHomeViewModel viewModel, UpdateService updates)
+    {
+        InitializeComponent();
+        BindingContext = _viewModel = viewModel;
+        _updates = updates;
+    }
+
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+        if (SignIn.EnsureSignedIn())
+        {
+            await _viewModel.LoadAsync();
+            await _updates.CheckAndAnnounceAsync();
+        }
+    }
+}

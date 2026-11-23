@@ -7,6 +7,9 @@
 
     <!-- App -->
     <PackageVersion Include="CommunityToolkit.Mvvm" Version="8.4.2" />
+    <PackageVersion Include="QRCoder" Version="1.6.0" />
+    <!-- Pinned like Travel Vault: newer ML Kit needs AndroidX libraries newer than .NET MAUI 10 supports (NU1608). -->
+    <PackageVersion Include="Xamarin.Google.MLKit.BarcodeScanning" Version="117.3.0.5" />
     <PackageVersion Include="Microsoft.Maui.Controls" Version="10.0.110" />
     <PackageVersion Include="Microsoft.Extensions.Logging.Debug" Version="10.0.0" />
 

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:s="clr-namespace:HandloomFactory.App.Resources.Strings"
+             xmlns:vm="clr-namespace:HandloomFactory.App.ViewModels"
+             x:Class="HandloomFactory.App.Views.JoinPage"
+             x:DataType="vm:JoinViewModel">
+    <ScrollView>
+        <VerticalStackLayout Padding="20,40" Spacing="12">
+            <Label Text="{x:Static s:AppResources.Join_Title}" Style="{StaticResource Heading}" FontSize="28" />
+
+            <!-- Step 1: scan or paste -->
+            <VerticalStackLayout Spacing="12" IsVisible="{Binding IsWaiting, Converter={StaticResource Not}}">
+                <Label Text="{x:Static s:AppResources.Join_Intro}" Style="{StaticResource Subtle}" />
+                <Button Text="{x:Static s:AppResources.Join_Scan}" Command="{Binding ScanCommand}" IsEnabled="{Binding IsBusy, Converter={StaticResource Not}}" />
+                <Button Text="{x:Static s:AppResources.Join_Paste}" Style="{StaticResource OutlineButton}" Command="{Binding PasteCommand}" IsEnabled="{Binding IsBusy, Converter={StaticResource Not}}" />
+                <Button Text="{x:Static s:AppResources.Common_Cancel}" Style="{StaticResource LinkButton}" Command="{Binding CancelCommand}" HorizontalOptions="Start" />
+            </VerticalStackLayout>
+
+            <!-- Step 2: waiting for the owner's phone -->
+            <VerticalStackLayout Spacing="12" IsVisible="{Binding IsWaiting}">
+                <ActivityIndicator IsRunning="{Binding IsWaiting}" Color="{StaticResource Primary}" />
+                <Label Text="{x:Static s:AppResources.Join_Waiting}" HorizontalTextAlignment="Center" />
+                <Button Text="{x:Static s:AppResources.Common_Cancel}" Style="{StaticResource OutlineButton}" Command="{Binding CancelCommand}" />
+            </VerticalStackLayout>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

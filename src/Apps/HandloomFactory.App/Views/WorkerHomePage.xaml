@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:s="clr-namespace:HandloomFactory.App.Resources.Strings"
+             xmlns:vm="clr-namespace:HandloomFactory.App.ViewModels"
+             x:Class="HandloomFactory.App.Views.WorkerHomePage"
+             x:DataType="vm:WorkerHomeViewModel"
+             Title="{x:Static s:AppResources.AppName}">
+    <RefreshView Command="{Binding SyncNowCommand}" IsRefreshing="{Binding IsRefreshing}">
+        <ScrollView>
+            <VerticalStackLayout Padding="16" Spacing="12">
+                <Border IsVisible="{Binding HasUpdate}" StrokeThickness="0" StrokeShape="RoundRectangle 12" Padding="16,12"
+                        BackgroundColor="{AppThemeBinding Light={StaticResource BannerLight}, Dark={StaticResource BannerDark}}">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding InstallUpdateCommand}" />
+                    </Border.GestureRecognizers>
+                    <Label Text="{Binding UpdateText}" FontFamily="OpenSansSemibold" />
+                </Border>
+
+                <Label Text="{Binding Greeting}" Style="{StaticResource Heading}" />
+
+                <!-- Today's sarees: one big box and Save -->
+                <Border Style="{StaticResource Card}" Padding="16">
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="{Binding TodayTitle}" Style="{StaticResource Subtle}" />
+                        <Label Text="{x:Static s:AppResources.WorkerHome_Question}" FontFamily="OpenSansSemibold" />
+                        <Entry Text="{Binding TodayText}" Keyboard="Numeric" MaxLength="3" FontSize="48" HorizontalTextAlignment="Center"
+                               WidthRequest="180" HorizontalOptions="Center" IsEnabled="{Binding TodayLocked, Converter={StaticResource Not}}" />
+                        <Button Text="{x:Static s:AppResources.Common_Save}" Command="{Binding SaveCommand}" IsVisible="{Binding TodayLocked, Converter={StaticResource Not}}" />
+                        <Label Text="{x:Static s:AppResources.WorkerHome_Locked}" Style="{StaticResource Subtle}" IsVisible="{Binding TodayLocked}" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border Style="{StaticResource Card}" Padding="16">
+                    <VerticalStackLayout Spacing="4">
+                        <Label Text="{Binding WeekText}" Style="{StaticResource Subtle}" />
+                        <Label Text="{Binding WeekMoney}" FontSize="24" FontFamily="OpenSansSemibold" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border Style="{StaticResource Card}" Padding="16">
+                    <VerticalStackLayout Spacing="4">
+                        <Label Text="{Binding MonthText}" Style="{StaticResource Subtle}" />
+                        <Label Text="{Binding MonthMoney}" FontSize="22" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <Label Text="{x:Static s:AppResources.Worker_History}" Style="{StaticResource SectionLabel}" />
+                <VerticalStackLayout BindableLayout.ItemsSource="{Binding Weeks}" Spacing="6">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate x:DataType="x:String">
+                            <Label Text="{Binding .}" FontSize="16" />
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </VerticalStackLayout>
+
+                <Label Text="{Binding SyncText}" Style="{StaticResource Subtle}" FontSize="14" HorizontalOptions="Center" Margin="0,16,0,0" />
+            </VerticalStackLayout>
+        </ScrollView>
+    </RefreshView>
+</ContentPage>

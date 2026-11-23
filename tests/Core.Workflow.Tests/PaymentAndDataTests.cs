@@ -209,11 +209,11 @@ public class DataExchangeTests
         Assert.False(newPhone.Session.IsSignedIn);
 
         // The imported owner has no PIN on this phone yet; the temporary owner is gone.
-        var owner = await newPhone.Accounts.OwnerNeedingPinAsync();
+        var owner = await newPhone.Accounts.PersonNeedingPinAsync();
         Assert.Equal("Santhosh", owner?.FullName);
         Assert.Empty(await newPhone.Accounts.LoginChoicesAsync());
-        Assert.True((await newPhone.Accounts.SetFirstOwnerPinAsync("2468", "2468")).Ok);
-        Assert.Null(await newPhone.Accounts.OwnerNeedingPinAsync());
+        Assert.True((await newPhone.Accounts.SetFirstPinAsync("2468", "2468")).Ok);
+        Assert.Null(await newPhone.Accounts.PersonNeedingPinAsync());
 
         // Everything is back: workers, rate history, entries, payments, audit.
         Assert.Equal(["Ramesh", "Suma"], (await newPhone.Employees.ListAsync()).Value!.Select(i => i.Employee.FullName));
@@ -240,7 +240,7 @@ public class DataExchangeTests
         Assert.True(preview.Ok);
         Assert.True((await fresh.Data.ImportAsync(preview.Value!.Data)).Ok);
         Assert.True(await fresh.Accounts.IsSetUpAsync());
-        Assert.NotNull(await fresh.Accounts.OwnerNeedingPinAsync());
+        Assert.NotNull(await fresh.Accounts.PersonNeedingPinAsync());
 
         // Once set up, a phone can't be overwritten by someone who isn't logged in as the owner.
         Assert.Equal(ErrorCode.NotAllowed, (await fresh.Data.ImportAsync(preview.Value.Data)).Error?.Code);
@@ -257,7 +257,7 @@ public class DataExchangeTests
         await phone.EnterAsync((await phone.Store.GetEmployeesAsync()).Single(e => e.FullName == "Suma"), Phone.Today, 9); // changed after export
         Assert.True((await phone.Data.ImportAsync(phone.Data.Preview(file).Value!.Data)).Ok);
 
-        Assert.Null(await phone.Accounts.OwnerNeedingPinAsync());
+        Assert.Null(await phone.Accounts.PersonNeedingPinAsync());
         Assert.True((await phone.Accounts.LoginAsync(owner.Id, "1234")).Success);
         Assert.Equal(3, (await phone.Reports.WeeklyAsync(Phone.Today)).Value!.TotalSarees); // Suma's 9 is gone again
     }

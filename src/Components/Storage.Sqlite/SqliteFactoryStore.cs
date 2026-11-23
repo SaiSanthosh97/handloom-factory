@@ -134,7 +134,7 @@ public sealed class SqliteFactoryStore(FactoryDatabase db) : IFactoryStore
                     t, ("$id", e.Id), ("$employee", e.EmployeeId), ("$date", Day(e.Date)), ("$count", e.SareeCount), ("$by", (int)e.EnteredBy), ("$created", Utc(e.CreatedAt)), ("$updated", Utc(e.UpdatedAt)));
             }
 
-            foreach (var id in changes.DeletedEntryIds)
+            foreach (var id in changes.DeletedEntries.Select(e => e.Id))
             {
                 c.Run("DELETE FROM production_entry WHERE id = $id;", t, ("$id", id));
             }
@@ -174,9 +174,15 @@ public sealed class SqliteFactoryStore(FactoryDatabase db) : IFactoryStore
                     ("$earnings", p.Earnings.Paise), ("$adjustment", p.Adjustment.Paise), ("$total", p.Total.Paise), ("$paid", Day(p.PaidDate)), ("$marked", Utc(p.MarkedAt)));
             }
 
-            foreach (var id in changes.DeletedPaymentIds)
+            foreach (var id in changes.DeletedPayments.Select(p => p.Id))
             {
                 c.Run("DELETE FROM payment WHERE id = $id;", t, ("$id", id));
+            }
+
+            // The sync outbox is written in the same transaction as the change it reports (TD-03).
+            foreach (var o in changes.Outbox)
+            {
+                c.Run("INSERT INTO outbox (channel, type, data) VALUES ($channel, $type, $data);", t, ("$channel", o.Channel), ("$type", o.Type), ("$data", o.Data));
             }
     }
 }

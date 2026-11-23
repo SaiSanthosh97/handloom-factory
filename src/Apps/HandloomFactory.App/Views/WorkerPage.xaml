@@ -20,6 +20,21 @@
                 </VerticalStackLayout>
             </Border>
 
+            <!-- The worker's own phone (0.3.0) -->
+            <Border Style="{StaticResource Card}" Padding="16" IsVisible="{Binding IsActive}">
+                <Border.Triggers>
+                    <DataTrigger TargetType="Border" Binding="{Binding IsNew}" Value="True">
+                        <Setter Property="IsVisible" Value="False" />
+                    </DataTrigger>
+                </Border.Triggers>
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="{x:Static s:AppResources.Worker_Phone_Title}" Style="{StaticResource Subtle}" />
+                    <Label Text="{Binding PhoneText}" FontFamily="OpenSansSemibold" />
+                    <Button Text="{x:Static s:AppResources.Worker_LinkPhone}" Style="{StaticResource OutlineButton}" Command="{Binding LinkPhoneCommand}" />
+                    <Button Text="{x:Static s:AppResources.Worker_Unlink}" Style="{StaticResource LinkButton}" Command="{Binding UnlinkPhoneCommand}" IsVisible="{Binding IsPhoneLinked}" HorizontalOptions="Start" />
+                </VerticalStackLayout>
+            </Border>
+
             <Label Text="{x:Static s:AppResources.Worker_Name}" Style="{StaticResource SectionLabel}" />
             <Entry Text="{Binding Name}" MaxLength="80" Keyboard="Text" />
             <Label Text="{x:Static s:AppResources.Worker_Phone}" Style="{StaticResource SectionLabel}" />

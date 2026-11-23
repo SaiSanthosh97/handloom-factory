@@ -5,6 +5,7 @@ using HandloomFactory.App.Resources.Strings;
 using HandloomFactory.App.Services;
 using HandloomFactory.Core.Common;
 using HandloomFactory.Core.Factory;
+using HandloomFactory.Core.Sync;
 using HandloomFactory.Core.Workflow;
 
 namespace HandloomFactory.App.ViewModels;
@@ -34,14 +35,14 @@ public sealed partial class WorkersViewModel(EmployeeService employees) : Observ
     }
 
     [RelayCommand]
-    private Task AddAsync() => Nav.GoAsync("worker");
+    private Task AddAsync() => Nav.GoAsync("workerdetail");
 
     [RelayCommand]
-    private Task OpenAsync(WorkerListItem item) => Nav.GoAsync($"worker?id={Uri.EscapeDataString(item.Id)}");
+    private Task OpenAsync(WorkerListItem item) => Nav.GoAsync($"workerdetail?id={Uri.EscapeDataString(item.Id)}");
 }
 
 /// <summary>Add a worker, or view/edit one: name, phone, rate (with history), this week/month, disable/enable.</summary>
-public sealed partial class WorkerViewModel(EmployeeService employees, ReportService reports, PaymentService payments, Dialogs dialogs) : ObservableObject, IQueryAttributable
+public sealed partial class WorkerViewModel(EmployeeService employees, ReportService reports, PaymentService payments, SyncEngine sync, Dialogs dialogs) : ObservableObject, IQueryAttributable
 {
     private string? _id;
 
@@ -52,6 +53,36 @@ public sealed partial class WorkerViewModel(EmployeeService employees, ReportSer
 
     [ObservableProperty]
     public partial bool IsNew { get; set; } = true;
+
+    [ObservableProperty]
+    public partial string PhoneText { get; set; } = "";
+
+    [ObservableProperty]
+    public partial bool IsPhoneLinked { get; set; }
+
+    /// <summary>Show the QR code that links (or re-links) this worker's own phone.</summary>
+    [RelayCommand]
+    private async Task LinkPhoneAsync()
+    {
+        if (IsPhoneLinked && !await dialogs.ConfirmAsync(AppResources.Worker_RelinkTitle, AppResources.Worker_RelinkText, AppResources.Worker_LinkPhone))
+        {
+            return;
+        }
+
+        await Nav.GoAsync($"linkphone?id={Uri.EscapeDataString(_id!)}");
+    }
+
+    [RelayCommand]
+    private async Task UnlinkPhoneAsync()
+    {
+        if (!await dialogs.ConfirmAsync(AppResources.Worker_UnlinkTitle, Show.Format(AppResources.Worker_UnlinkText, Name), AppResources.Worker_Unlink))
+        {
+            return;
+        }
+
+        await sync.UnlinkAsync(_id!);
+        await LoadAsync();
+    }
 
     [ObservableProperty]
     public partial string Title { get; set; } = AppResources.Worker_NewTitle;
@@ -131,6 +162,15 @@ public sealed partial class WorkerViewModel(EmployeeService employees, ReportSer
         {
             RateHistory.Add(Show.Format(AppResources.Worker_RateFromItem, change.Rate, Show.DayWithYear(change.EffectiveFrom)));
         }
+
+        var channel = await sync.ChannelAsync(_id);
+        IsPhoneLinked = channel is { IsLinked: true };
+        PhoneText = channel switch
+        {
+            { IsLinked: true, LastSeenAt: { } seen } => Show.Format(AppResources.Worker_PhoneLinkedSeen, seen.ToLocalTime().ToString("d MMM HH:mm", System.Globalization.CultureInfo.CurrentCulture)),
+            { IsLinked: true } => AppResources.Worker_PhoneLinked,
+            _ => AppResources.Worker_PhoneNotLinked,
+        };
 
         History.Clear();
         foreach (var week in (await payments.HistoryAsync(_id)).Value ?? [])

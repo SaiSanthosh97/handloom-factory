@@ -16,10 +16,12 @@
                 </VerticalStackLayout>
             </Border>
 
+            <VerticalStackLayout Spacing="12" IsVisible="{Binding IsOwner}">
             <Label Text="{x:Static s:AppResources.Settings_Data}" Style="{StaticResource SectionLabel}" />
             <Button Text="{x:Static s:AppResources.Settings_Export}" Command="{Binding ExportCommand}" IsEnabled="{Binding IsBusy, Converter={StaticResource Not}}" />
             <Label Text="{x:Static s:AppResources.Settings_ExportNote}" Style="{StaticResource Subtle}" FontSize="14" />
             <Button Text="{x:Static s:AppResources.Settings_Import}" Style="{StaticResource OutlineButton}" Command="{Binding ImportCommand}" IsEnabled="{Binding IsBusy, Converter={StaticResource Not}}" />
+            </VerticalStackLayout>
 
             <Label Text="{x:Static s:AppResources.Settings_Title}" Style="{StaticResource SectionLabel}" />
             <Button Text="{x:Static s:AppResources.Settings_ChangePin}" Style="{StaticResource OutlineButton}" Command="{Binding ChangePinCommand}" />

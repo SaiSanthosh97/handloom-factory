@@ -1,6 +1,8 @@
 using HandloomFactory.App.Services;
 using HandloomFactory.App.ViewModels;
 using HandloomFactory.App.Views;
+using HandloomFactory.Core.Relay;
+using HandloomFactory.Core.Sync;
 using HandloomFactory.Core.Workflow;
 using Microsoft.Extensions.Logging;
 
@@ -44,6 +46,17 @@ public static class MauiProgram
         services.AddSingleton<ReportService>();
         services.AddSingleton<PaymentService>();
         services.AddSingleton<DataService>();
+        services.AddSingleton<WorkerService>();
+
+        // Sync (0.3.0): the engine writes to the inner store (records from other phones are not echoed back).
+        services.AddSingleton<IRelayFactory>(sp => new NtfyRelayFactory(sp.GetRequiredService<HttpClient>(), "HandloomFactory"));
+        services.AddSingleton(sp =>
+        {
+            var host = sp.GetRequiredService<AppHost>();
+            host.Open();
+            return new SyncEngine(host.Inner, host.SyncStore, sp.GetRequiredService<IRelayFactory>(), host.Clock, AppInfo.Current.VersionString);
+        });
+        services.AddSingleton<SyncScheduler>();
 
         // Screens: tabs are singletons (they keep their place); pushed and start pages are fresh each time.
         services.AddTransient<StartViewModel>();
@@ -64,9 +77,25 @@ public static class MauiProgram
         services.AddTransient<WorkerPage>();
         services.AddSingleton<ReportViewModel>();
         services.AddSingleton<ReportPage>();
-        services.AddSingleton<SettingsViewModel>();
-        services.AddSingleton<SettingsPage>();
+        services.AddTransient<SettingsViewModel>();
+        services.AddTransient<SettingsPage>(); // on the owner's and the worker's tabs
+        services.AddTransient<LinkPhoneViewModel>();
+        services.AddTransient<LinkPhonePage>();
+        services.AddTransient<JoinViewModel>();
+        services.AddTransient<JoinPage>();
+        services.AddSingleton<WorkerHomeViewModel>();
+        services.AddSingleton<WorkerHomePage>();
 
-        return builder.Build();
+        var app = builder.Build();
+
+        // Also runs when Android starts the app only for the background job (no screen).
+        Device.BackgroundWork.BackgroundWork.Initialize(async token =>
+        {
+            if (app.Services.GetRequiredService<AppHost>().Open())
+            {
+                await app.Services.GetRequiredService<SyncScheduler>().RunAsync(token);
+            }
+        });
+        return app;
     }
 }

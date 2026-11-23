@@ -131,7 +131,7 @@ public sealed class PaymentService(WorkflowContext context)
 
         var name = (await context.Store.GetEmployeesAsync(cancellationToken)).FirstOrDefault(e => e.Id == employeeId)?.FullName ?? employeeId;
         var changes = new ChangeSet();
-        changes.DeletedPaymentIds.Add(payment.Id);
+        changes.DeletedPayments.Add(payment);
         changes.Audit.Add(context.Audit(AuditActions.PaymentUnmarked, "Payment", payment.Id,
             $"{name} {payment.WeekStart:yyyy-MM-dd}..{payment.WeekEnd:yyyy-MM-dd}: {payment.Total} paid {payment.PaidDate:yyyy-MM-dd}", null));
         await context.Store.CommitAsync(changes, cancellationToken);

@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <!-- Reads the link QR code from a camera photo with Google ML Kit, on the phone. Adapted from Travel Vault. -->
+    <TargetFrameworks>net10.0-android</TargetFrameworks>
+    <SupportedOSPlatformVersion>23</SupportedOSPlatformVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Xamarin.Google.MLKit.BarcodeScanning" />
+  </ItemGroup>
+</Project>

@@ -35,7 +35,7 @@ public sealed record ImportPreview(FactoryData Data, string FactoryName, int Wor
 /// <summary>Reads and writes export files: indented, readable JSON (D18: plain, not password-protected).</summary>
 public static class FactoryDataFile
 {
-    private static readonly JsonSerializerOptions Options = Create();
+    private static JsonSerializerOptions Options => FactoryJson.Options;
 
     public static string Write(FactoryData data) => JsonSerializer.Serialize(data with { Kind = FactoryData.FileKind }, Options);
 
@@ -100,6 +100,16 @@ public static class FactoryDataFile
         return null;
     }
 
+}
+
+/// <summary>One JSON setup for export files and sync messages, so a record looks the same in both.</summary>
+public static class FactoryJson
+{
+    public static readonly JsonSerializerOptions Options = Create();
+
+    /// <summary>Compact form for sync records (export files are indented).</summary>
+    public static readonly JsonSerializerOptions Compact = new(Options) { WriteIndented = false };
+
     private static JsonSerializerOptions Create()
     {
         var options = new JsonSerializerOptions(JsonSerializerDefaults.Web) { WriteIndented = true };
@@ -108,7 +118,7 @@ public static class FactoryDataFile
         return options;
     }
 
-    /// <summary>Money as a plain number of paise (50000 = ₹500), so the file stays exact and readable.</summary>
+    /// <summary>Money as a plain number of paise (50000 = ₹500), so files and messages stay exact and readable.</summary>
     private sealed class MoneyConverter : JsonConverter<Money>
     {
         public override Money Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) => new(reader.GetInt64());

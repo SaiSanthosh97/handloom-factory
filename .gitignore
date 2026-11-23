@@ -489,3 +489,6 @@ signing.props
 # Real (redacted) ticket samples stay local
 samples/real/*
 !samples/real/.gitkeep
+
+# Release build copies (git worktrees of tagged versions)
+/.rel/

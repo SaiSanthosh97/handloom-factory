@@ -18,8 +18,8 @@
 
 		<!-- ApplicationDisplayVersion must match the GitHub release tag (v0.1.0) for update checks.
 		     ApplicationVersion must go up by one with every release. -->
-		<ApplicationDisplayVersion>0.2.0</ApplicationDisplayVersion>
-		<ApplicationVersion>2</ApplicationVersion>
+		<ApplicationDisplayVersion>0.3.0</ApplicationDisplayVersion>
+		<ApplicationVersion>3</ApplicationVersion>
 
 		<!-- Android 6.0+ (D19): covers most phones sold from 2016 on. -->
 		<SupportedOSPlatformVersion>23.0</SupportedOSPlatformVersion>
@@ -41,12 +41,16 @@
 
 	<ItemGroup>
 		<PackageReference Include="CommunityToolkit.Mvvm" />
+		<PackageReference Include="QRCoder" />
 		<PackageReference Include="Microsoft.Maui.Controls" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\Components\Core.Workflow\Core.Workflow.csproj" />
+		<ProjectReference Include="..\..\Components\Core.Sync\Core.Sync.csproj" />
+		<ProjectReference Include="..\..\Components\Device.BackgroundWork\Device.BackgroundWork.csproj" />
+		<ProjectReference Include="..\..\Components\Device.Vision\Device.Vision.csproj" />
 		<ProjectReference Include="..\..\Components\Core.AppUpdater\Core.AppUpdater.csproj" />
 		<ProjectReference Include="..\..\Components\Storage.Sqlite\Storage.Sqlite.csproj" />
 		<ProjectReference Include="..\..\Components\Device.Security\Device.Security.csproj" />

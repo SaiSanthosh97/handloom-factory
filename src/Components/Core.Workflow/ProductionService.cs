@@ -75,7 +75,7 @@ public sealed class ProductionService(WorkflowContext context)
             {
                 if (old is not null)
                 {
-                    changes.DeletedEntryIds.Add(old.Id);
+                    changes.DeletedEntries.Add(old);
                     changes.Audit.Add(context.Audit(AuditActions.EntryDeleted, "Entry", old.Id, Describe(employee, old.Date, old.SareeCount), null));
                 }
 
@@ -103,12 +103,12 @@ public sealed class ProductionService(WorkflowContext context)
             changes.Audit.Add(context.Audit(AuditActions.EntrySaved, "Entry", entry.Id, old is null ? null : Describe(employee, date, old.SareeCount), Describe(employee, date, count.Value)));
         }
 
-        if (changes.Entries.Count + changes.DeletedEntryIds.Count > 0)
+        if (changes.Entries.Count + changes.DeletedEntries.Count > 0)
         {
             await context.Store.CommitAsync(changes, cancellationToken);
         }
 
-        return Result.Success(changes.Entries.Count + changes.DeletedEntryIds.Count);
+        return Result.Success(changes.Entries.Count + changes.DeletedEntries.Count);
     }
 
     /// <summary>A worker saves (or changes) their own count for today. Refused when the admin already set today's value (D10).</summary>

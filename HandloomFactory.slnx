@@ -6,8 +6,10 @@
     <Project Path="src/Components/Core.AppUpdater/Core.AppUpdater.csproj" />
     <Project Path="src/Components/Core.Common/Core.Common.csproj" />
     <Project Path="src/Components/Core.Factory/Core.Factory.csproj" />
+    <Project Path="src/Components/Core.Relay/Core.Relay.csproj" />
     <Project Path="src/Components/Core.Reports/Core.Reports.csproj" />
     <Project Path="src/Components/Core.Security/Core.Security.csproj" />
+    <Project Path="src/Components/Core.Sync/Core.Sync.csproj" />
     <Project Path="src/Components/Core.Workflow/Core.Workflow.csproj" />
     <Project Path="src/Components/Device.Security/Device.Security.csproj" />
     <Project Path="src/Components/Storage.Sqlite/Storage.Sqlite.csproj" />
@@ -16,6 +18,7 @@
     <Project Path="tests/Core.AppUpdater.Tests/Core.AppUpdater.Tests.csproj" />
     <Project Path="tests/Core.Common.Tests/Core.Common.Tests.csproj" />
     <Project Path="tests/Core.Factory.Tests/Core.Factory.Tests.csproj" />
+    <Project Path="tests/Core.Sync.Tests/Core.Sync.Tests.csproj" />
     <Project Path="tests/Core.Workflow.Tests/Core.Workflow.Tests.csproj" />
   </Folder>
 </Solution>

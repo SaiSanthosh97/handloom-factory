@@ -117,4 +117,5 @@ public static class AuditActions
     public const string PaymentUnmarked = "PaymentUnmarked";
     public const string DataExported = "DataExported";
     public const string DataImported = "DataImported";
+    public const string PhoneLinked = "PhoneLinked";
 }

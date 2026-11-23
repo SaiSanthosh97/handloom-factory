@@ -1,0 +1,6 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <!-- Publish and fetch short messages through an ntfy server (ntfy.sh or self-hosted). Copied from Travel Vault (D13). -->
+    <TargetFramework>net10.0</TargetFramework>
+  </PropertyGroup>
+</Project>

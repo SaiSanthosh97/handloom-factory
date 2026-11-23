@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <!-- Owner-hub sync (D1, D5): one private encrypted channel per worker through the relay, phone linking, outbox. -->
+    <TargetFramework>net10.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Core.Relay\Core.Relay.csproj" />
+    <ProjectReference Include="..\Core.Workflow\Core.Workflow.csproj" />
+  </ItemGroup>
+</Project>

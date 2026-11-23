@@ -31,9 +31,12 @@ public sealed class StartViewModel(AppHost host, IServiceProvider services, Dial
     {
         if (!await accounts.IsSetUpAsync())
         {
-            await Nav.GoAsync("//setup");
+            // A worker's phone that scanned the QR but hasn't been confirmed yet goes back to waiting.
+            var sync = IPlatformApplication.Current?.Services.GetService<Core.Sync.SyncEngine>();
+            var joining = sync is not null && await sync.WorkerStateAsync() == Core.Sync.ChannelState.Joining;
+            await Nav.GoAsync(joining ? "//join" : "//setup");
         }
-        else if (await accounts.OwnerNeedingPinAsync() is not null)
+        else if (await accounts.PersonNeedingPinAsync() is not null)
         {
             await Nav.GoAsync("//newpin");
         }
@@ -57,12 +60,12 @@ public sealed partial class NewPinViewModel(AccountService accounts, Dialogs dia
     public partial string ConfirmPin { get; set; } = "";
 
     public async Task LoadAsync() =>
-        Intro = Show.Format(AppResources.NewPin_Intro, (await accounts.OwnerNeedingPinAsync())?.FullName ?? "");
+        Intro = Show.Format(AppResources.NewPin_Intro, (await accounts.PersonNeedingPinAsync())?.FullName ?? "");
 
     [RelayCommand]
     private async Task SaveAsync()
     {
-        var result = await accounts.SetFirstOwnerPinAsync(Pin, ConfirmPin);
+        var result = await accounts.SetFirstPinAsync(Pin, ConfirmPin);
         if (!result.Ok)
         {
             await dialogs.ErrorAsync(result.Error);
@@ -76,6 +79,10 @@ public sealed partial class NewPinViewModel(AccountService accounts, Dialogs dia
 /// <summary>First launch on the owner's phone: factory name, owner name, PIN twice, or restore from an export file.</summary>
 public sealed partial class SetupViewModel(AccountService accounts, DataService data, Dialogs dialogs) : ObservableObject
 {
+    /// <summary>A worker's own phone: link it to the owner's phone with the QR code (TD-03).</summary>
+    [RelayCommand]
+    private Task JoinAsWorkerAsync() => Nav.GoAsync("//join");
+
     /// <summary>New phone, existing factory: import an export file instead of starting empty (D18).</summary>
     [RelayCommand]
     private async Task RestoreAsync()
@@ -357,10 +364,16 @@ public sealed partial class SettingsViewModel(AppHost host, AccountService accou
 
     public string VersionText => Show.Format(AppResources.Settings_Version, UpdateService.CurrentVersion.ToString(3));
 
+    /// <summary>Export, import and factory details are for the owner's phone only.</summary>
+    [ObservableProperty]
+    public partial bool IsOwner { get; set; }
+
     public async Task LoadAsync()
     {
+        context.Reset();
         var factory = await context.FactoryAsync();
-        FactoryText = factory is null ? "" : $"{factory.Name} · {factory.OwnerName}";
+        IsOwner = host.Session.IsAdmin;
+        FactoryText = factory is null ? "" : IsOwner ? $"{factory.Name} · {factory.OwnerName}" : factory.Name;
         UserText = Show.Format(AppResources.Settings_LoggedInAs, host.Session.User?.FullName ?? "");
     }
 

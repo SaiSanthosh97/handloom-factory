@@ -32,7 +32,12 @@ public static class Nav
 
     public static Task BackAsync() => MainThread.InvokeOnMainThreadAsync(() => Shell.Current.GoToAsync(".."));
 
-    public static Task HomeAsync() => GoAsync("//main/home");
+    /// <summary>The owner's tabs, or the worker's own home on a worker's phone.</summary>
+    public static Task HomeAsync()
+    {
+        var session = IPlatformApplication.Current?.Services.GetService<AppHost>()?.Session;
+        return GoAsync(session is { IsSignedIn: true, IsAdmin: false } ? "//worker/whome" : "//main/home");
+    }
 
     public static Task LoginAsync() => GoAsync("//login");
 }
@@ -64,6 +69,10 @@ public static class ErrorText
             ErrorCode.NothingToPay => AppResources.Error_NothingToPay,
             ErrorCode.PaidDateInvalid => AppResources.Error_PaidDateInvalid,
             ErrorCode.PinAlreadySet => AppResources.Error_PinAlreadySet,
+            ErrorCode.InviteInvalid => AppResources.Error_InviteInvalid,
+            ErrorCode.InviteExpired => AppResources.Error_InviteExpired,
+            ErrorCode.NoInternet => AppResources.Error_NoInternet,
+            ErrorCode.TodaySetByOwner => AppResources.Error_TodaySetByOwner,
             _ => AppResources.Common_Error,
         };
 

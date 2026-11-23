@@ -134,6 +134,19 @@ internal static class Migrations
             UNIQUE (employee_id, week_start));
         CREATE INDEX ix_payment_week ON payment (week_start);
         """,
+
+        // 3 (v0.3.0): sync channels (one per linked worker) and the outbox
+        """
+        CREATE TABLE sync_channel (
+            employee_id TEXT PRIMARY KEY, relay_url TEXT NOT NULL, topic TEXT NOT NULL, channel_key BLOB NOT NULL,
+            owner_key BLOB NOT NULL, worker_key BLOB, state INTEGER NOT NULL, invite_id TEXT, invite_secret BLOB,
+            invite_expires TEXT, last_message_id TEXT, last_sync_at TEXT, last_seen_at TEXT, last_state_request_at TEXT,
+            next_seq INTEGER NOT NULL, peer_seq INTEGER NOT NULL, created_at TEXT NOT NULL);
+
+        CREATE TABLE outbox (
+            id INTEGER PRIMARY KEY AUTOINCREMENT, channel TEXT NOT NULL, type TEXT NOT NULL, data TEXT NOT NULL);
+        CREATE INDEX ix_outbox_channel ON outbox (channel, id);
+        """,
     ];
 
     public static int Latest => Steps.Length;
