@@ -24,6 +24,7 @@ Requirements: [requirements.md](requirements.md) · Change log: [docs/CHANGES.md
 | 0.2.0 | Weekly payments (mark paid), worker history, monthly and yearly reports, export all data and import it again |
 | 0.3.0 | Worker phones: link by QR code (or a code sent on WhatsApp), worker PIN, worker enters today's sarees and sees earnings and payments; encrypted sync through ntfy.sh; background sync |
 | 0.5.0 | Includes 0.4.0. CSV export of every report (opens in Excel, share by WhatsApp), change history screen (Settings), optional owner notifications through the ntfy app (worker submitted, weekly payments ready, test), Android notification when a new app version is out |
+| 0.6.0 | Owner can also weave (Settings → "I also weave sarees"), edit the factory name and your name, "Forgot PIN?" on the login screen (unlock with the phone's screen lock), "Start over on this phone" (back to the first screen with "I'm a worker") |
 
 ## Components
 

@@ -26,7 +26,7 @@ public sealed partial class SyncEngine
             }
 
             var factory = await data.GetFactoryAsync(cancellationToken) ?? throw new InvalidOperationException("No factory.");
-            var worker = (await data.GetEmployeesAsync(cancellationToken)).FirstOrDefault(e => e.Id == employeeId && e.IsWorker && e.IsActive)
+            var worker = (await data.GetEmployeesAsync(cancellationToken)).FirstOrDefault(e => e.Id == employeeId && e.Role == Role.Employee && e.IsActive)
                 ?? throw new InvalidOperationException("No such active worker.");
 
             if ((await store.GetChannelsAsync(cancellationToken)).FirstOrDefault(c => c.EmployeeId == employeeId) is { IsLinked: true } old)

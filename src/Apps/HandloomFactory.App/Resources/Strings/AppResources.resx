@@ -280,4 +280,34 @@ This REPLACES everything on this phone. A copy of the current data is saved firs
   <data name="Notify_Submitted" xml:space="preserve"><value>{0} submitted {1} sarees today</value></data>
   <data name="Notify_Weekly" xml:space="preserve"><value>Weekly payments ready: {0} for {1} workers</value></data>
   <data name="Update_NotificationTitle" xml:space="preserve"><value>Handloom Factory update available</value></data>
+  <!-- 0.6.0: owner also weaves, edit factory, forgot PIN, start over -->
+  <data name="Settings_EditFactory" xml:space="preserve"><value>Edit factory name and your name</value></data>
+  <data name="Settings_Weaves" xml:space="preserve"><value>I also weave sarees</value></data>
+  <data name="Settings_WeavesExplain" xml:space="preserve"><value>Turn on if you make sarees yourself. You then appear in Workers, day entry, reports and payments like any worker, with your own rate. You keep the owner's login.</value></data>
+  <data name="Settings_WeavesRate" xml:space="preserve"><value>Your rate per saree (₹)</value></data>
+  <data name="Settings_WeavesOn" xml:space="preserve"><value>You now appear in Workers and day entry</value></data>
+  <data name="Settings_WeavesOff" xml:space="preserve"><value>You no longer appear in day entry (your history is kept)</value></data>
+  <data name="Settings_StartOver" xml:space="preserve"><value>Start over on this phone</value></data>
+  <data name="Settings_StartOverNote" xml:space="preserve"><value>Erases everything on this phone and goes back to the first screen, where you can set up a factory again or choose "I'm a worker".</value></data>
+  <data name="Settings_StartOverOwnerText" xml:space="preserve"><value>This erases the factory, all workers, saree entries, payments and history from this phone. It can't be undone.
+
+Export your data first (Settings → Export all data) if you may need it again.
+
+Workers' phones linked to this phone stop syncing; link them again afterwards.</value></data>
+  <data name="Settings_StartOverWorkerText" xml:space="preserve"><value>This erases your entries and earnings from this phone and unlinks it from the owner. The owner's phone keeps everything. It can't be undone.</value></data>
+  <data name="Settings_StartOverConfirm" xml:space="preserve"><value>Erase everything</value></data>
+  <data name="Settings_StartOverPin" xml:space="preserve"><value>Type your PIN to confirm</value></data>
+  <data name="Login_ForgotPin" xml:space="preserve"><value>Forgot PIN?</value></data>
+  <data name="Login_ForgotWorker" xml:space="preserve"><value>Ask the owner to tap "Link phone" for you again and scan the new QR code. You then choose a new PIN, and your history comes back.</value></data>
+  <data name="Login_ForgotNoLock" xml:space="preserve"><value>This phone has no screen lock, so the app can't check that it is you.
+
+Set a screen lock (Android Settings → Security), then tap "Forgot PIN?" again.
+
+Or, to erase this phone and start over: Android Settings → Apps → Handloom Factory → Storage → Clear data.</value></data>
+  <data name="Login_ForgotUnlock" xml:space="preserve"><value>Unlock with your phone's screen lock to choose a new app PIN</value></data>
+  <data name="Workers_OwnerName" xml:space="preserve"><value>{0} (owner)</value></data>
+  <data name="Worker_OwnerNote" xml:space="preserve"><value>This is you. To stop appearing in day entry, turn off "I also weave sarees" in Settings.</value></data>
+  <data name="Audit_FactoryUpdated" xml:space="preserve"><value>Factory name changed</value></data>
+  <data name="Audit_OwnerWeaves" xml:space="preserve"><value>Owner weaving turned on/off</value></data>
+  <data name="Audit_PinReset" xml:space="preserve"><value>Forgotten PIN reset</value></data>
 </root>

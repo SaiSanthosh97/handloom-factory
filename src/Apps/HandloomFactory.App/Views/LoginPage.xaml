@@ -36,6 +36,8 @@
                    FontSize="40" HorizontalTextAlignment="Center" WidthRequest="200" HorizontalOptions="Center" />
             <Label Text="{Binding Message}" TextColor="{StaticResource Danger}" HorizontalOptions="Center" HorizontalTextAlignment="Center"
                    IsVisible="{Binding Message, Converter={StaticResource NotEmpty}}" />
+            <Button Text="{x:Static s:AppResources.Login_ForgotPin}" Style="{StaticResource LinkButton}" Command="{Binding ForgotPinCommand}"
+                    HorizontalOptions="Center" Margin="0,24,0,0" />
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

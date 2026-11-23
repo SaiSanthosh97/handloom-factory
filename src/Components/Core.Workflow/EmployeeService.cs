@@ -100,8 +100,19 @@ public sealed class EmployeeService(WorkflowContext context)
         var updated = employee with { FullName = name, PhoneNumber = phone, UpdatedAt = context.Now };
         var changes = new ChangeSet();
         changes.Employees.Add(updated);
+        if (employee.IsOwner && await context.FactoryAsync(cancellationToken) is { } factory)
+        {
+            changes.Factory = factory with { OwnerName = name }; // the owner who weaves, renamed from the Workers tab
+        }
+
         changes.Audit.Add(context.Audit(AuditActions.EmployeeUpdated, "Employee", employee.Id, new { employee.FullName, employee.PhoneNumber }, new { updated.FullName, updated.PhoneNumber }));
         await context.Store.CommitAsync(changes, cancellationToken);
+        if (employee.IsOwner)
+        {
+            context.Reset();
+            context.Session.SignIn(updated);
+        }
+
         return Result.Success(updated);
     }
 
@@ -148,6 +159,11 @@ public sealed class EmployeeService(WorkflowContext context)
         if (employee.IsActive == active)
         {
             return Result.Success();
+        }
+
+        if (employee.IsOwner)
+        {
+            return Result.Fail(ErrorCode.NotAllowed); // disabling the owner would lock everyone out; see "I also weave" in Settings
         }
 
         var changes = new ChangeSet();

@@ -17,8 +17,8 @@ public sealed class SqliteFactoryStore(FactoryDatabase db) : IFactoryStore
 
     public Task<IReadOnlyList<Employee>> GetEmployeesAsync(CancellationToken cancellationToken = default) =>
         db.UseAsync<IReadOnlyList<Employee>>(c => c.Query(
-            "SELECT id, code, full_name, phone, role, is_active, created_at, updated_at FROM employee ORDER BY code;",
-            r => new Employee(r.GetString(0), r.GetString(1), r.GetString(2), r.NullableString(3), (Role)r.GetInt32(4), r.GetInt32(5) != 0, ParseUtc(r.GetString(6)), ParseUtc(r.GetString(7)))), cancellationToken);
+            "SELECT id, code, full_name, phone, role, is_active, created_at, updated_at, weaves FROM employee ORDER BY code;",
+            r => new Employee(r.GetString(0), r.GetString(1), r.GetString(2), r.NullableString(3), (Role)r.GetInt32(4), r.GetInt32(5) != 0, ParseUtc(r.GetString(6)), ParseUtc(r.GetString(7)), r.GetInt32(8) != 0)), cancellationToken);
 
     public Task<IReadOnlyList<RateChange>> GetRateChangesAsync(CancellationToken cancellationToken = default) =>
         db.UseAsync<IReadOnlyList<RateChange>>(c => c.Query(
@@ -106,11 +106,11 @@ public sealed class SqliteFactoryStore(FactoryDatabase db) : IFactoryStore
             {
                 c.Run(
                     """
-                    INSERT INTO employee (id, code, full_name, phone, role, is_active, created_at, updated_at)
-                    VALUES ($id, $code, $name, $phone, $role, $active, $created, $updated)
-                    ON CONFLICT(id) DO UPDATE SET code = $code, full_name = $name, phone = $phone, role = $role, is_active = $active, updated_at = $updated;
+                    INSERT INTO employee (id, code, full_name, phone, role, is_active, created_at, updated_at, weaves)
+                    VALUES ($id, $code, $name, $phone, $role, $active, $created, $updated, $weaves)
+                    ON CONFLICT(id) DO UPDATE SET code = $code, full_name = $name, phone = $phone, role = $role, is_active = $active, updated_at = $updated, weaves = $weaves;
                     """,
-                    t, ("$id", e.Id), ("$code", e.Code), ("$name", e.FullName), ("$phone", e.PhoneNumber), ("$role", (int)e.Role), ("$active", e.IsActive ? 1 : 0), ("$created", Utc(e.CreatedAt)), ("$updated", Utc(e.UpdatedAt)));
+                    t, ("$id", e.Id), ("$code", e.Code), ("$name", e.FullName), ("$phone", e.PhoneNumber), ("$role", (int)e.Role), ("$active", e.IsActive ? 1 : 0), ("$created", Utc(e.CreatedAt)), ("$updated", Utc(e.UpdatedAt)), ("$weaves", e.Weaves ? 1 : 0));
             }
 
             foreach (var r in changes.Rates)

@@ -165,6 +165,103 @@ public sealed class AccountService(WorkflowContext context)
         return Result.Success();
     }
 
+    /// <summary>Owner: change the factory name and their own name (Settings, 0.6.0).</summary>
+    public async Task<Result> UpdateFactoryAsync(string factoryName, string ownerName, CancellationToken cancellationToken = default)
+    {
+        if (!context.Session.IsAdmin || await context.FactoryAsync(cancellationToken) is not { } factory || context.Session.User is not { } owner)
+        {
+            return Result.Fail(ErrorCode.NotAllowed);
+        }
+
+        var name = factoryName.Trim();
+        var person = ownerName.Trim();
+        if (name.Length is 0 or > 80 || person.Length is 0 or > 80)
+        {
+            return Result.Fail(ErrorCode.NameRequired);
+        }
+
+        var renamed = owner with { FullName = person, UpdatedAt = context.Now };
+        var changes = new ChangeSet { Factory = factory with { Name = name, OwnerName = person } };
+        changes.Employees.Add(renamed);
+        changes.Audit.Add(context.Audit(AuditActions.FactoryUpdated, "Factory", factory.Id, new { factory.Name, factory.OwnerName }, new { Name = name, OwnerName = person }));
+        await context.Store.CommitAsync(changes, cancellationToken);
+        context.Reset();
+        context.Session.SignIn(renamed);
+        return Result.Success();
+    }
+
+    /// <summary>
+    /// Owner: "I also weave sarees" (0.6.0). When on, the owner appears in the Workers list, day entry, reports and
+    /// payments like any worker. The first time, a rate per saree is needed (from <paramref name="rateFrom"/>).
+    /// Turning it off keeps the history; it only stops new days.
+    /// </summary>
+    public async Task<Result> SetOwnerWeavesAsync(bool weaves, Money? rate = null, DateOnly? rateFrom = null, CancellationToken cancellationToken = default)
+    {
+        if (!context.Session.IsAdmin || context.Session.User is not { } owner)
+        {
+            return Result.Fail(ErrorCode.NotAllowed);
+        }
+
+        var current = (await context.Store.GetEmployeesAsync(cancellationToken)).FirstOrDefault(e => e.Id == owner.Id) ?? owner;
+        var hasRate = (await context.Store.GetRateChangesAsync(cancellationToken)).Any(r => r.EmployeeId == owner.Id);
+        var changes = new ChangeSet();
+        if (weaves && rate is { } newRate)
+        {
+            if (newRate.Paise <= 0)
+            {
+                return Result.Fail(ErrorCode.RateInvalid);
+            }
+
+            var from = rateFrom ?? (await context.TimeAsync(cancellationToken)).Today;
+            changes.Rates.Add(new RateChange(RateChange.IdFor(owner.Id, from), owner.Id, newRate, from, context.Now));
+            changes.Audit.Add(context.Audit(AuditActions.RateChanged, "Employee", owner.Id, null, new { Rate = newRate.ToString(), From = from }));
+        }
+        else if (weaves && !hasRate)
+        {
+            return Result.Fail(ErrorCode.RateInvalid);
+        }
+
+        var updated = current with { Weaves = weaves, UpdatedAt = context.Now };
+        changes.Employees.Add(updated);
+        changes.Audit.Add(context.Audit(AuditActions.OwnerWeaves, "Employee", owner.Id, current.Weaves, weaves));
+        await context.Store.CommitAsync(changes, cancellationToken);
+        context.Session.SignIn(updated);
+        return Result.Success();
+    }
+
+    /// <summary>Whether the owner already has a rate (so "I also weave" can be turned on again without asking).</summary>
+    public async Task<bool> OwnerHasRateAsync(CancellationToken cancellationToken = default) =>
+        context.Session.User is { } owner && (await context.Store.GetRateChangesAsync(cancellationToken)).Any(r => r.EmployeeId == owner.Id);
+
+    /// <summary>The owner of this phone (for "Forgot PIN?"), or null on a worker's phone.</summary>
+    public async Task<Employee?> OwnerAsync(CancellationToken cancellationToken = default) =>
+        (await context.Store.GetEmployeesAsync(cancellationToken)).FirstOrDefault(e => e.IsOwner && e.IsActive);
+
+    /// <summary>
+    /// "Forgot PIN?" on the owner's phone: a new PIN without the old one. The app must first confirm the phone's own
+    /// screen lock (fingerprint, pattern or phone PIN), which only the phone's owner knows (requirements: Owner forgot PIN).
+    /// Workers who forget their PIN are re-linked by the owner instead.
+    /// </summary>
+    public async Task<Result> ResetOwnerPinAsync(string newPin, string confirmPin, CancellationToken cancellationToken = default)
+    {
+        if (await OwnerAsync(cancellationToken) is not { } owner)
+        {
+            return Result.Fail(ErrorCode.NotAllowed);
+        }
+
+        if (PinError(newPin, confirmPin) is { } error)
+        {
+            return Result.Fail(error);
+        }
+
+        var changes = new ChangeSet();
+        changes.Credentials.Add(new Credential(owner.Id, Pins.Hash(newPin), 0, null));
+        changes.Audit.Add(new AuditEntry(Ids.New(), context.Now, owner.Id, AuditActions.PinReset, "Employee", owner.Id, null, null));
+        await context.Store.CommitAsync(changes, cancellationToken);
+        context.Session.SignIn(owner);
+        return Result.Success();
+    }
+
     private static ErrorCode? PinError(string pin, string confirmPin) =>
         !Pins.IsWellFormed(pin) ? ErrorCode.PinMustBeFourDigits
         : pin != confirmPin ? ErrorCode.PinsDoNotMatch

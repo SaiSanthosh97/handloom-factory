@@ -26,6 +26,10 @@
                     <DataTrigger TargetType="Border" Binding="{Binding IsNew}" Value="True">
                         <Setter Property="IsVisible" Value="False" />
                     </DataTrigger>
+                    <!-- The owner who weaves uses this phone: no phone to link. -->
+                    <DataTrigger TargetType="Border" Binding="{Binding IsOwnerRecord}" Value="True">
+                        <Setter Property="IsVisible" Value="False" />
+                    </DataTrigger>
                 </Border.Triggers>
                 <VerticalStackLayout Spacing="8">
                     <Label Text="{x:Static s:AppResources.Worker_Phone_Title}" Style="{StaticResource Subtle}" />
@@ -82,10 +86,14 @@
                     </VerticalStackLayout>
                 </Border>
 
-                <Button Text="{x:Static s:AppResources.Worker_Disable}" Style="{StaticResource DangerButton}" Command="{Binding ToggleActiveCommand}"
-                        IsVisible="{Binding IsActive}" Margin="0,16,0,24" />
-                <Button Text="{x:Static s:AppResources.Worker_Enable}" Style="{StaticResource OutlineButton}" Command="{Binding ToggleActiveCommand}"
-                        IsVisible="{Binding IsActive, Converter={StaticResource Not}}" Margin="0,16,0,24" />
+                <VerticalStackLayout IsVisible="{Binding IsOwnerRecord, Converter={StaticResource Not}}">
+                    <Button Text="{x:Static s:AppResources.Worker_Disable}" Style="{StaticResource DangerButton}" Command="{Binding ToggleActiveCommand}"
+                            IsVisible="{Binding IsActive}" Margin="0,16,0,24" />
+                    <Button Text="{x:Static s:AppResources.Worker_Enable}" Style="{StaticResource OutlineButton}" Command="{Binding ToggleActiveCommand}"
+                            IsVisible="{Binding IsActive, Converter={StaticResource Not}}" Margin="0,16,0,24" />
+                </VerticalStackLayout>
+                <Label Text="{x:Static s:AppResources.Worker_OwnerNote}" Style="{StaticResource Subtle}" FontSize="14" Margin="0,16,0,24"
+                       IsVisible="{Binding IsOwnerRecord}" />
             </VerticalStackLayout>
         </VerticalStackLayout>
     </ScrollView>

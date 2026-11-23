@@ -67,6 +67,9 @@ public sealed partial class AuditViewModel(AuditService audit) : ObservableObjec
         AuditActions.DataExported => AppResources.Audit_DataExported,
         AuditActions.DataImported => AppResources.Audit_DataImported,
         AuditActions.PhoneLinked => AppResources.Audit_PhoneLinked,
+        AuditActions.FactoryUpdated => AppResources.Audit_FactoryUpdated,
+        AuditActions.OwnerWeaves => AppResources.Audit_OwnerWeaves,
+        AuditActions.PinReset => AppResources.Audit_PinReset,
         _ => action,
     };
 

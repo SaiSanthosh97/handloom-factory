@@ -15,8 +15,8 @@ public sealed class Dialogs
         Page.DisplayAlertAsync(title, message, accept, cancel ?? AppResources.Common_Cancel);
 
     /// <returns>The typed text, or null when cancelled.</returns>
-    public Task<string?> PromptAsync(string title, string message, Keyboard? keyboard = null, int maxLength = 50) =>
-        Page.DisplayPromptAsync(title, message, AppResources.Common_OK, AppResources.Common_Cancel, maxLength: maxLength, keyboard: keyboard ?? Keyboard.Default);
+    public Task<string?> PromptAsync(string title, string message, Keyboard? keyboard = null, int maxLength = 50, string initialValue = "") =>
+        Page.DisplayPromptAsync(title, message, AppResources.Common_OK, AppResources.Common_Cancel, maxLength: maxLength, keyboard: keyboard ?? Keyboard.Default, initialValue: initialValue);
 
     public Task ErrorAsync(Error? error) => AlertAsync(AppResources.Common_Check, ErrorText.For(error));
 

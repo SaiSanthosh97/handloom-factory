@@ -28,9 +28,11 @@ public sealed record FactoryInfo(
 }
 
 /// <summary>
-/// A person who can log in. The owner is an employee with <see cref="Role.Admin"/> (and no rate); workers have
+/// A person who can log in. The owner is an employee with <see cref="Role.Admin"/>; workers have
 /// <see cref="Role.Employee"/>. Employees are disabled, never deleted, so their history stays.
 /// </summary>
+/// <param name="Weaves">The owner also weaves (0.6.0): they get a rate and are counted and paid like a worker, but keep
+/// the owner's login and rights. Always true in effect for workers.</param>
 public sealed record Employee(
     string Id,
     string Code,
@@ -39,9 +41,13 @@ public sealed record Employee(
     Role Role,
     bool IsActive,
     DateTimeOffset CreatedAt,
-    DateTimeOffset UpdatedAt)
+    DateTimeOffset UpdatedAt,
+    bool Weaves = false)
 {
-    public bool IsWorker => Role == Role.Employee;
+    /// <summary>Makes sarees: counted in day entry, reports and payments (workers, and the owner when they weave).</summary>
+    public bool IsWorker => Role == Role.Employee || Weaves;
+
+    public bool IsOwner => Role == Role.Admin;
 
     /// <summary>The next code after the existing ones: E001, E002, …</summary>
     public static string NextCode(IEnumerable<string> existingCodes)
@@ -118,4 +124,7 @@ public static class AuditActions
     public const string DataExported = "DataExported";
     public const string DataImported = "DataImported";
     public const string PhoneLinked = "PhoneLinked";
+    public const string FactoryUpdated = "FactoryUpdated";
+    public const string OwnerWeaves = "OwnerWeaves";
+    public const string PinReset = "PinReset";
 }

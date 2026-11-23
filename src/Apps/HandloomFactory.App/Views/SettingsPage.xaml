@@ -13,6 +13,19 @@
                     <Label Text="{x:Static s:AppResources.Settings_Factory}" Style="{StaticResource Subtle}" />
                     <Label Text="{Binding FactoryText}" FontFamily="OpenSansSemibold" />
                     <Label Text="{Binding UserText}" Style="{StaticResource Subtle}" />
+                    <Button Text="{x:Static s:AppResources.Settings_EditFactory}" Style="{StaticResource LinkButton}" Command="{Binding EditFactoryCommand}"
+                            HorizontalOptions="Start" IsVisible="{Binding IsOwner}" />
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- Owner: also weaves (0.6.0) -->
+            <Border Style="{StaticResource Card}" Padding="16" IsVisible="{Binding IsOwner}">
+                <VerticalStackLayout Spacing="8">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Text="{x:Static s:AppResources.Settings_Weaves}" FontFamily="OpenSansSemibold" VerticalOptions="Center" />
+                        <Switch Grid.Column="1" IsToggled="{Binding OwnerWeaves}" />
+                    </Grid>
+                    <Label Text="{x:Static s:AppResources.Settings_WeavesExplain}" Style="{StaticResource Subtle}" FontSize="14" />
                 </VerticalStackLayout>
             </Border>
 
@@ -44,6 +57,8 @@
             <Button Text="{x:Static s:AppResources.Settings_ChangePin}" Style="{StaticResource OutlineButton}" Command="{Binding ChangePinCommand}" />
             <Button Text="{x:Static s:AppResources.Settings_CheckUpdates}" Style="{StaticResource OutlineButton}" Command="{Binding CheckUpdatesCommand}" />
             <Button Text="{x:Static s:AppResources.Settings_Logout}" Style="{StaticResource OutlineButton}" Command="{Binding LogoutCommand}" />
+            <Button Text="{x:Static s:AppResources.Settings_StartOver}" Style="{StaticResource DangerButton}" Command="{Binding StartOverCommand}" Margin="0,16,0,0" />
+            <Label Text="{x:Static s:AppResources.Settings_StartOverNote}" Style="{StaticResource Subtle}" FontSize="14" />
 
             <Label Text="{Binding VersionText}" Style="{StaticResource Subtle}" HorizontalOptions="Center" Margin="0,24,0,0" />
             <Label Text="{x:Static s:AppResources.Settings_About}" Style="{StaticResource Subtle}" FontSize="14" HorizontalOptions="Center" />

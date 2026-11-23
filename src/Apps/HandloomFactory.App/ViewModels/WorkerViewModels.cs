@@ -28,7 +28,7 @@ public sealed partial class WorkersViewModel(EmployeeService employees) : Observ
         {
             var e = item.Employee;
             var rate = item.CurrentRate is { } r ? Show.PerSaree(r) : AppResources.Entry_NoRate;
-            Workers.Add(new WorkerListItem(e.Id, e.FullName, e.IsActive ? $"{e.Code} · {rate}" : $"{e.Code} · {AppResources.Workers_Disabled}", e.IsActive));
+            Workers.Add(new WorkerListItem(e.Id, e.IsOwner ? Show.Format(AppResources.Workers_OwnerName, e.FullName) : e.FullName, e.IsActive ? $"{e.Code} · {rate}" : $"{e.Code} · {AppResources.Workers_Disabled}", e.IsActive));
         }
 
         IsEmpty = Workers.Count == 0;
@@ -114,6 +114,10 @@ public sealed partial class WorkerViewModel(EmployeeService employees, ReportSer
     [ObservableProperty]
     public partial bool IsActive { get; set; } = true;
 
+    /// <summary>The owner, who also weaves (0.6.0): no phone link and no disable.</summary>
+    [ObservableProperty]
+    public partial bool IsOwnerRecord { get; set; }
+
     [ObservableProperty]
     public partial string NewRateText { get; set; } = "";
 
@@ -151,6 +155,7 @@ public sealed partial class WorkerViewModel(EmployeeService employees, ReportSer
         Name = d.Employee.FullName;
         Phone = d.Employee.PhoneNumber ?? "";
         IsActive = d.Employee.IsActive;
+        IsOwnerRecord = d.Employee.IsOwner;
         CodeText = Show.Format(AppResources.Worker_Code, d.Employee.Code);
         TodayText = Show.Format(AppResources.Worker_Today, d.Summary.TodaySarees is { } t ? Show.Sarees(t) : AppResources.Worker_NotEntered);
         WeekText = Show.Format(AppResources.Worker_ThisWeek, d.Summary.ThisWeek.Sarees, d.Summary.ThisWeek.Earnings);

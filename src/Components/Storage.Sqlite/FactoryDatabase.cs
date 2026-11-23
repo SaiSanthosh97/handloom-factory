@@ -147,6 +147,11 @@ internal static class Migrations
             id INTEGER PRIMARY KEY AUTOINCREMENT, channel TEXT NOT NULL, type TEXT NOT NULL, data TEXT NOT NULL);
         CREATE INDEX ix_outbox_channel ON outbox (channel, id);
         """,
+
+        // 4 (v0.6.0): the owner can also weave (counted and paid like a worker)
+        """
+        ALTER TABLE employee ADD COLUMN weaves INTEGER NOT NULL DEFAULT 0;
+        """,
     ];
 
     public static int Latest => Steps.Length;

@@ -391,6 +391,25 @@ public class NotificationTests
     }
 
     [Fact]
+    public async Task Owner_who_weaves_stays_on_the_owner_phone_only()
+    {
+        using var f = await new Factory().SetUpAsync();
+        var ramesh = await f.LinkAsync(f.Ramesh);
+        Assert.True((await f.Owner.Accounts.SetOwnerWeavesAsync(true, Money.FromRupees(400), new DateOnly(2026, 11, 1))).Ok);
+        var owner = f.Owner.Session.User!;
+        await f.Owner.Production.SaveDayAsync(Factory.Today, new Dictionary<string, int?> { [owner.Id] = 2, [f.Ramesh.Id] = 1 });
+        await f.Owner.SyncAsync();
+        await ramesh.SyncAsync();
+
+        // Ramesh's phone gets only Ramesh's entry, never the owner's.
+        var entries = await ramesh.Store.GetEntriesAsync(new DateRange(Factory.Today, Factory.Today));
+        Assert.Equal(f.Ramesh.Id, Assert.Single(entries).EmployeeId);
+
+        // No phone can be linked to the owner's own record.
+        await Assert.ThrowsAsync<InvalidOperationException>(() => f.Owner.Sync.CreateInviteAsync(owner.Id, Factory.Relay));
+    }
+
+    [Fact]
     public async Task Weekly_payments_notice_on_saturday_evening_once()
     {
         using var f = await new Factory().SetUpAsync();

@@ -172,8 +172,55 @@ public sealed partial class PersonItem(Employee employee) : ObservableObject
 }
 
 /// <summary>Login (D2): tap your name, type your 4-digit PIN. It logs in as soon as the 4th digit is typed.</summary>
-public sealed partial class LoginViewModel(AccountService accounts) : ObservableObject
+public sealed partial class LoginViewModel(AccountService accounts, Dialogs dialogs) : ObservableObject
 {
+    /// <summary>
+    /// "Forgot PIN?" (0.6.0). Owner's phone: confirm the phone's screen lock, then choose a new PIN. Worker's phone: the
+    /// owner re-links it (a new PIN is chosen then).
+    /// </summary>
+    [RelayCommand]
+    private async Task ForgotPinAsync()
+    {
+        if (await accounts.OwnerAsync() is null)
+        {
+            await dialogs.AlertAsync(AppResources.Login_ForgotPin, AppResources.Login_ForgotWorker);
+            return;
+        }
+
+        if (!DeviceLock.IsSet)
+        {
+            await dialogs.AlertAsync(AppResources.Login_ForgotPin, AppResources.Login_ForgotNoLock);
+            return;
+        }
+
+        if (!await DeviceLock.ConfirmAsync(AppResources.Login_ForgotPin, AppResources.Login_ForgotUnlock))
+        {
+            return;
+        }
+
+        var pin = await dialogs.PromptAsync(AppResources.Login_ForgotPin, AppResources.Settings_NewPin, Keyboard.Numeric, 4);
+        if (pin is null)
+        {
+            return;
+        }
+
+        var again = await dialogs.PromptAsync(AppResources.Login_ForgotPin, AppResources.Settings_ConfirmPin, Keyboard.Numeric, 4);
+        if (again is null)
+        {
+            return;
+        }
+
+        var result = await accounts.ResetOwnerPinAsync(pin, again);
+        if (!result.Ok)
+        {
+            await dialogs.ErrorAsync(result.Error);
+            return;
+        }
+
+        Dialogs.Toast(AppResources.Settings_PinChanged);
+        await Nav.HomeAsync();
+    }
+
     public ObservableCollection<PersonItem> People { get; } = [];
 
     [ObservableProperty]
@@ -423,6 +470,118 @@ public sealed partial class SettingsViewModel(AppHost host, AccountService accou
     [ObservableProperty]
     public partial bool IsOwner { get; set; }
 
+    /// <summary>Owner: "I also weave sarees" (0.6.0).</summary>
+    [ObservableProperty]
+    public partial bool OwnerWeaves { get; set; }
+
+    partial void OnOwnerWeavesChanged(bool value)
+    {
+        if (!_loadingNotify)
+        {
+            _ = SetOwnerWeavesAsync(value);
+        }
+    }
+
+    private async Task SetOwnerWeavesAsync(bool on)
+    {
+        Core.Common.Money? rate = null;
+        if (on && !await accounts.OwnerHasRateAsync())
+        {
+            var text = await dialogs.PromptAsync(AppResources.Settings_Weaves, AppResources.Settings_WeavesRate, Keyboard.Numeric, 9);
+            if (text is null || !Core.Common.Money.TryParse(text, out var parsed) || parsed.Paise <= 0)
+            {
+                if (text is not null)
+                {
+                    await dialogs.ErrorAsync(new Core.Common.Error(Core.Common.ErrorCode.RateInvalid));
+                }
+
+                SetQuietly(() => OwnerWeaves = false);
+                return;
+            }
+
+            rate = parsed;
+        }
+
+        // From the start of this pay week, so this week's days can be entered.
+        var from = Core.Common.Periods.PayWeek((await context.TimeAsync()).Today).Start;
+        var result = await accounts.SetOwnerWeavesAsync(on, rate, from);
+        if (!result.Ok)
+        {
+            await dialogs.ErrorAsync(result.Error);
+            SetQuietly(() => OwnerWeaves = !on);
+            return;
+        }
+
+        Dialogs.Toast(on ? AppResources.Settings_WeavesOn : AppResources.Settings_WeavesOff);
+    }
+
+    private void SetQuietly(Action change)
+    {
+        _loadingNotify = true;
+        change();
+        _loadingNotify = false;
+    }
+
+    /// <summary>Owner: change the factory name and their own name.</summary>
+    [RelayCommand]
+    private async Task EditFactoryAsync()
+    {
+        if (await context.FactoryAsync() is not { } factory)
+        {
+            return;
+        }
+
+        var name = await dialogs.PromptAsync(AppResources.Settings_EditFactory, AppResources.Setup_FactoryName, Keyboard.Text, 80, factory.Name);
+        if (name is null)
+        {
+            return;
+        }
+
+        var owner = await dialogs.PromptAsync(AppResources.Settings_EditFactory, AppResources.Setup_OwnerName, Keyboard.Text, 80, factory.OwnerName);
+        if (owner is null)
+        {
+            return;
+        }
+
+        var result = await accounts.UpdateFactoryAsync(name, owner);
+        if (!result.Ok)
+        {
+            await dialogs.ErrorAsync(result.Error);
+            return;
+        }
+
+        await LoadAsync();
+    }
+
+    /// <summary>
+    /// Erase everything on this phone and go back to the first screen (set up a factory, "I'm a worker", or restore).
+    /// Asks twice and for the PIN; the owner is told to export first.
+    /// </summary>
+    [RelayCommand]
+    private async Task StartOverAsync()
+    {
+        var text = IsOwner ? AppResources.Settings_StartOverOwnerText : AppResources.Settings_StartOverWorkerText;
+        if (!await dialogs.ConfirmAsync(AppResources.Settings_StartOver, text, AppResources.Settings_StartOverConfirm))
+        {
+            return;
+        }
+
+        if (host.Session.User is not { } user
+            || await dialogs.PromptAsync(AppResources.Settings_StartOver, AppResources.Settings_StartOverPin, Keyboard.Numeric, 4) is not { } pin)
+        {
+            return;
+        }
+
+        if (!(await accounts.LoginAsync(user.Id, pin)).Success)
+        {
+            await dialogs.ErrorAsync(new Core.Common.Error(Core.Common.ErrorCode.WrongPin));
+            return;
+        }
+
+        await StartOver.EraseAsync(host, context);
+        await Nav.GoAsync("//setup");
+    }
+
     public async Task LoadAsync()
     {
         context.Reset();
@@ -431,6 +590,7 @@ public sealed partial class SettingsViewModel(AppHost host, AccountService accou
         _loadingNotify = true;
         NotifyTopic = await Sync.NotifyTopicAsync() ?? "";
         NotificationsOn = NotifyTopic.Length > 0;
+        OwnerWeaves = host.Session.User?.Weaves == true;
         _loadingNotify = false;
         FactoryText = factory is null ? "" : IsOwner ? $"{factory.Name} · {factory.OwnerName}" : factory.Name;
         UserText = Show.Format(AppResources.Settings_LoggedInAs, host.Session.User?.FullName ?? "");

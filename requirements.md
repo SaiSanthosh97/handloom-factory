@@ -55,7 +55,8 @@ Uses their own Android phone, which holds the **master copy** of all data (D5).
 
 Can:
 
-- Set up the factory (first launch)
+- Set up the factory (first launch), and later change the factory name and their own name (D21)
+- **Also weave** (D20): be counted and paid for their own sarees like a worker, with their own rate
 - Add employee
 - Edit employee
 - Disable employee
@@ -130,7 +131,7 @@ This Month (November)
 
 # Admin Flow
 
-First time only: Set up factory (factory name, owner name, owner PIN).
+First time only: Set up factory (factory name, owner name, owner PIN). Both names can be changed later in Settings (D21). If the owner also weaves, they turn on "I also weave sarees" and set their rate (D20).
 
 Then:
 
@@ -171,7 +172,8 @@ Mark Payments Paid (Saturday)
 - **Owner phone:** asks for the PIN each time the app is opened after 5 minutes in the background, because it holds everyone's wages.
 - 5 wrong PINs → wait 30 seconds (doubling on further failures).
 - **Worker forgot PIN:** the owner taps "Re-link phone" for that worker and shows a new QR. The worker scans it and chooses a new PIN. Their history comes back from the owner's phone.
-- **Owner forgot PIN:** confirm with the phone's own screen lock (fingerprint / phone PIN), then choose a new app PIN.
+- **Owner forgot PIN:** "Forgot PIN?" on the login screen → confirm with the phone's own screen lock (fingerprint / pattern / phone PIN), then choose a new app PIN. If the phone has no screen lock, the app explains how to set one (or how to clear the app's data to start over) (0.6.0).
+- **Logging out** (Settings → Log out) returns to this screen. **Start over on this phone** (Settings, D21) erases everything and returns to the first screen: set up a factory, "I'm a worker", or restore from a file.
 
 ---
 
@@ -430,6 +432,7 @@ tests/
 - PhoneNumber (optional)
 - Role (Admin / Employee)
 - IsActive
+- Weaves (owner only: also makes sarees and is paid like a worker, D20)
 - CreatedAt
 - LinkedDevice (when the phone is linked)
 
@@ -565,6 +568,7 @@ Each step is a release (its own version, tag, tests and docs). The owner tests a
 | **0.3.0** | Worker phones: link by QR, worker PIN login, worker enters today's sarees, sync via ntfy, worker earnings and payments, worker export |
 | **0.4.0** | CSV report export, audit log screen (Kannada cancelled, C-005). Released inside 0.5.0 (C-008) |
 | **0.5.0** | ntfy push notifications, background update notification, polish from feedback. Includes 0.4.0 (C-009) |
+| **0.6.0** | Owner feedback: owner also weaves (D20), edit factory and owner names, "Forgot PIN?" for the owner, start over on this phone (D21) (C-010) |
 
 ---
 
@@ -618,3 +622,5 @@ Important:
 | D17 | Deliver in small, installable MVP releases (0.1.0, 0.2.0, …). | Owner wants to test and give feedback continuously. |
 | D18 | Full data export (plain JSON, no PINs) and import that replaces everything, with an automatic copy saved before replacing. | Owner: payments and history must be exportable and re-importable. |
 | D19 | Minimum Android 6.0 (API 23); the APK contains 64-bit and 32-bit ARM code. | Owner asked whether 2016 phones work. Most 2016 phones run Android 6/7, often 32-bit. Android 5 lacks the Keystore encryption key the database needs. |
+| D20 | **The owner can also weave** (Settings → "I also weave sarees", with their own rate). They are then counted in day entry, reports and payments like any worker, but keep one login (the owner's PIN) and all owner rights. The owner can't be disabled and no phone can be linked to the owner's record. One phone is still either the owner's phone or a worker's phone (no account switching). | Owner: "One user can be a owner and worker". Chosen over switching accounts on one phone (C-010). |
+| D21 | The owner can **edit the factory name and their own name** (Settings), and any phone can **start over** (Settings → "Start over on this phone": erase everything after a warning and the PIN, back to the first screen with "I'm a worker"). | Owner set up a test factory with a random name and could not change it or get to "I'm a worker" (C-010). |
