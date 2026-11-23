@@ -31,3 +31,4 @@ Phones offer the update the next time the app is opened.
 ## Notes
 - The repository must stay **public**, because the app reads releases without a login. Only the app and its source code are public; factory data never leaves the phones.
 - Emulator test builds: `-p:EmulatorBuild=true` adds x86-64 code.
+- **Long Windows paths.** The project folder name is long, so Android's resource tool (aapt2) can fail on deep build paths. Build each release from a short clean copy of the tag: `git worktree add --detach .rel/050 v0.5.0` (`.rel/` is ignored by git). `git worktree remove` can then fail with "Filename too long". Delete the old copy with `cmd /c rd /s /q "\\?\<full path>\.rel\050"`, then run `git worktree prune`.
