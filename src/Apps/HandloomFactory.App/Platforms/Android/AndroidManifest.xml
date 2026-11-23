@@ -18,6 +18,9 @@
 	<!-- In-app updates from GitHub Releases ("Install unknown apps" is asked once). -->
 	<uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
 
+	<!-- Update notices from the background job (0.5.0); Android 13+ asks the user once. -->
+	<uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
 	<!-- Background sync about every 15 minutes, kept after a restart (0.3.0). -->
 	<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 

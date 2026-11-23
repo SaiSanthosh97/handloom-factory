@@ -230,6 +230,10 @@ public sealed partial class SyncEngine(IFactoryStore data, ISyncStore store, IRe
         }
 
         await store.DeleteOutboxAsync(queued.Select(q => q.Id), cancellationToken);
+        if (role == PhoneRole.Worker && records.Count > 0)
+        {
+            await NotifySubmittedAsync(relay, channel, records, cancellationToken);
+        }
 
         if (role == PhoneRole.Owner && queued.Any(q => q.Item.Type == RecordTypes.Revoke))
         {

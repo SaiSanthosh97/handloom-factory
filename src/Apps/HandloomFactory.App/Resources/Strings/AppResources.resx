@@ -237,4 +237,47 @@ This REPLACES everything on this phone. A copy of the current data is saved firs
   <data name="Error_InviteExpired" xml:space="preserve"><value>This code has expired (codes work for 15 minutes). Ask the owner to tap "Link phone" again.</value></data>
   <data name="Error_NoInternet" xml:space="preserve"><value>No internet. Please connect to the internet and try again.</value></data>
   <data name="Error_TodaySetByOwner" xml:space="preserve"><value>The owner has already set today's number, so it can't be changed here.</value></data>
+  <data name="Report_ExportCsv" xml:space="preserve"><value>Export as CSV (Excel)</value></data>
+  <data name="Csv_Code" xml:space="preserve"><value>Code</value></data>
+  <data name="Csv_Sarees" xml:space="preserve"><value>Sarees</value></data>
+  <data name="Csv_Rate" xml:space="preserve"><value>Rate per saree (Rs)</value></data>
+  <data name="Csv_Earnings" xml:space="preserve"><value>Earnings (Rs)</value></data>
+  <data name="Csv_Payment" xml:space="preserve"><value>Payment</value></data>
+  <data name="Csv_PaidAmount" xml:space="preserve"><value>Paid amount (Rs)</value></data>
+  <data name="Csv_Paid" xml:space="preserve"><value>Paid</value></data>
+  <data name="Csv_ToPay" xml:space="preserve"><value>To pay</value></data>
+  <data name="Audit_Title" xml:space="preserve"><value>Change history</value></data>
+  <data name="Audit_Empty" xml:space="preserve"><value>No changes yet.</value></data>
+  <data name="Audit_Export" xml:space="preserve"><value>Export history as CSV</value></data>
+  <data name="Audit_System" xml:space="preserve"><value>worker's phone / app</value></data>
+  <data name="Audit_When" xml:space="preserve"><value>When</value></data>
+  <data name="Audit_Who" xml:space="preserve"><value>Who</value></data>
+  <data name="Audit_What" xml:space="preserve"><value>What</value></data>
+  <data name="Audit_Before" xml:space="preserve"><value>Before</value></data>
+  <data name="Audit_After" xml:space="preserve"><value>After</value></data>
+  <data name="Audit_FactorySetUp" xml:space="preserve"><value>Factory set up</value></data>
+  <data name="Audit_EmployeeCreated" xml:space="preserve"><value>Worker added</value></data>
+  <data name="Audit_EmployeeUpdated" xml:space="preserve"><value>Worker details changed</value></data>
+  <data name="Audit_EmployeeDisabled" xml:space="preserve"><value>Worker disabled</value></data>
+  <data name="Audit_EmployeeEnabled" xml:space="preserve"><value>Worker enabled</value></data>
+  <data name="Audit_RateChanged" xml:space="preserve"><value>Rate changed</value></data>
+  <data name="Audit_EntrySaved" xml:space="preserve"><value>Sarees saved</value></data>
+  <data name="Audit_EntryDeleted" xml:space="preserve"><value>Sarees removed</value></data>
+  <data name="Audit_PinChanged" xml:space="preserve"><value>PIN changed</value></data>
+  <data name="Audit_PaymentMarked" xml:space="preserve"><value>Marked paid</value></data>
+  <data name="Audit_PaymentUnmarked" xml:space="preserve"><value>Paid undone</value></data>
+  <data name="Audit_DataExported" xml:space="preserve"><value>Data exported</value></data>
+  <data name="Audit_DataImported" xml:space="preserve"><value>Data imported</value></data>
+  <data name="Audit_PhoneLinked" xml:space="preserve"><value>Worker's phone linked</value></data>
+  <data name="Notify_Title" xml:space="preserve"><value>Notifications</value></data>
+  <data name="Notify_Explain" xml:space="preserve"><value>Get a message on this phone when a worker submits sarees, and on Saturday evening when wages are ready. Uses the free ntfy app (install it from the Play Store).</value></data>
+  <data name="Notify_Warning" xml:space="preserve"><value>Notification texts (worker names and saree counts) are sent as plain text through ntfy.sh, not encrypted. Your other data stays encrypted. Turn on?</value></data>
+  <data name="Notify_TurnOn" xml:space="preserve"><value>Turn on</value></data>
+  <data name="Notify_Open" xml:space="preserve"><value>Open in the ntfy app</value></data>
+  <data name="Notify_Test" xml:space="preserve"><value>Send a test notification</value></data>
+  <data name="Notify_TestMessage" xml:space="preserve"><value>Test: notifications are working.</value></data>
+  <data name="Notify_TestSent" xml:space="preserve"><value>Test notification sent</value></data>
+  <data name="Notify_Submitted" xml:space="preserve"><value>{0} submitted {1} sarees today</value></data>
+  <data name="Notify_Weekly" xml:space="preserve"><value>Weekly payments ready: {0} for {1} workers</value></data>
+  <data name="Update_NotificationTitle" xml:space="preserve"><value>Handloom Factory update available</value></data>
 </root>

@@ -21,7 +21,24 @@
             <Button Text="{x:Static s:AppResources.Settings_Export}" Command="{Binding ExportCommand}" IsEnabled="{Binding IsBusy, Converter={StaticResource Not}}" />
             <Label Text="{x:Static s:AppResources.Settings_ExportNote}" Style="{StaticResource Subtle}" FontSize="14" />
             <Button Text="{x:Static s:AppResources.Settings_Import}" Style="{StaticResource OutlineButton}" Command="{Binding ImportCommand}" IsEnabled="{Binding IsBusy, Converter={StaticResource Not}}" />
+            <Button Text="{x:Static s:AppResources.Audit_Title}" Style="{StaticResource OutlineButton}" Command="{Binding OpenHistoryCommand}" />
             </VerticalStackLayout>
+
+            <!-- Owner: push notifications through the ntfy app (0.5.0) -->
+            <Border Style="{StaticResource Card}" Padding="16" IsVisible="{Binding IsOwner}">
+                <VerticalStackLayout Spacing="8">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Text="{x:Static s:AppResources.Notify_Title}" FontFamily="OpenSansSemibold" VerticalOptions="Center" />
+                        <Switch Grid.Column="1" IsToggled="{Binding NotificationsOn}" />
+                    </Grid>
+                    <Label Text="{x:Static s:AppResources.Notify_Explain}" Style="{StaticResource Subtle}" FontSize="14" />
+                    <VerticalStackLayout Spacing="8" IsVisible="{Binding NotificationsOn}">
+                        <Label Text="{Binding NotifyTopic}" FontSize="14" />
+                        <Button Text="{x:Static s:AppResources.Notify_Open}" Style="{StaticResource OutlineButton}" Command="{Binding OpenNtfyCommand}" />
+                        <Button Text="{x:Static s:AppResources.Notify_Test}" Style="{StaticResource LinkButton}" Command="{Binding TestNotificationCommand}" HorizontalOptions="Start" />
+                    </VerticalStackLayout>
+                </VerticalStackLayout>
+            </Border>
 
             <Label Text="{x:Static s:AppResources.Settings_Title}" Style="{StaticResource SectionLabel}" />
             <Button Text="{x:Static s:AppResources.Settings_ChangePin}" Style="{StaticResource OutlineButton}" Command="{Binding ChangePinCommand}" />

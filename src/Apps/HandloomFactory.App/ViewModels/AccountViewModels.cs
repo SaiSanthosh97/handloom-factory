@@ -274,6 +274,61 @@ public sealed partial class SettingsViewModel(AppHost host, AccountService accou
     [ObservableProperty]
     public partial bool IsBusy { get; set; }
 
+    [ObservableProperty]
+    public partial bool NotificationsOn { get; set; }
+
+    [ObservableProperty]
+    public partial string NotifyTopic { get; set; } = "";
+
+    private bool _loadingNotify;
+
+    private Core.Sync.SyncEngine Sync => IPlatformApplication.Current!.Services.GetRequiredService<Core.Sync.SyncEngine>();
+
+    /// <summary>Owner: push notifications through the free ntfy app (TD-05). Plain text, so the owner is told first.</summary>
+    partial void OnNotificationsOnChanged(bool value)
+    {
+        if (!_loadingNotify)
+        {
+            _ = SetNotificationsAsync(value);
+        }
+    }
+
+    private async Task SetNotificationsAsync(bool on)
+    {
+        if (on && !await dialogs.ConfirmAsync(AppResources.Notify_Title, AppResources.Notify_Warning, AppResources.Notify_TurnOn))
+        {
+            _loadingNotify = true;
+            NotificationsOn = false;
+            _loadingNotify = false;
+            return;
+        }
+
+        NotifyTopic = await Sync.SetNotificationsAsync(on) ?? "";
+        IPlatformApplication.Current!.Services.GetRequiredService<SyncScheduler>().SyncSoon(TimeSpan.Zero);
+        if (on)
+        {
+            await OpenNtfyAsync();
+        }
+    }
+
+    /// <summary>Opens the topic: the ntfy app (if installed) offers to subscribe, otherwise the browser shows how.</summary>
+    [RelayCommand]
+    private async Task OpenNtfyAsync()
+    {
+        if (NotifyTopic.Length > 0)
+        {
+            await Launcher.Default.OpenAsync(new Uri($"{Core.Relay.NtfyRelayFactory.DefaultServer}/{NotifyTopic}"));
+        }
+    }
+
+    [RelayCommand]
+    private async Task TestNotificationAsync() =>
+        Dialogs.Toast(await Sync.SendTestNotificationAsync(AppResources.Notify_TestMessage) ? AppResources.Notify_TestSent : AppResources.Error_NoInternet);
+
+    /// <summary>The change history (audit log).</summary>
+    [RelayCommand]
+    private Task OpenHistoryAsync() => Nav.GoAsync("audit");
+
     /// <summary>Export all data (D18) and share the file.</summary>
     [RelayCommand]
     private async Task ExportAsync()
@@ -373,6 +428,10 @@ public sealed partial class SettingsViewModel(AppHost host, AccountService accou
         context.Reset();
         var factory = await context.FactoryAsync();
         IsOwner = host.Session.IsAdmin;
+        _loadingNotify = true;
+        NotifyTopic = await Sync.NotifyTopicAsync() ?? "";
+        NotificationsOn = NotifyTopic.Length > 0;
+        _loadingNotify = false;
         FactoryText = factory is null ? "" : IsOwner ? $"{factory.Name} · {factory.OwnerName}" : factory.Name;
         UserText = Show.Format(AppResources.Settings_LoggedInAs, host.Session.User?.FullName ?? "");
     }

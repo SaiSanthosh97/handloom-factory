@@ -23,8 +23,7 @@ Requirements: [requirements.md](requirements.md) · Change log: [docs/CHANGES.md
 | 0.1.0 | Owner phone only: set up the factory, PIN login, add, edit and disable workers with rates (including rate changes), enter sarees for any day, dashboard, weekly report, update alerts |
 | 0.2.0 | Weekly payments (mark paid), worker history, monthly and yearly reports, export all data and import it again |
 | 0.3.0 | Worker phones: link by QR code (or a code sent on WhatsApp), worker PIN, worker enters today's sarees and sees earnings and payments; encrypted sync through ntfy.sh; background sync |
-| 0.4.0 | CSV reports, audit log screen |
-| 0.5.0 | Push notifications, polish |
+| 0.5.0 | Includes 0.4.0. CSV export of every report (opens in Excel, share by WhatsApp), change history screen (Settings), optional owner notifications through the ntfy app (worker submitted, weekly payments ready, test), Android notification when a new app version is out |
 
 ## Components
 

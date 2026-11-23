@@ -294,3 +294,26 @@ public class DataExchangeTests
         Assert.Equal(ErrorCode.NotAllowed, (await phone.Data.ExportAsync(Version)).Error?.Code);
     }
 }
+
+public class AuditTests
+{
+    [Fact]
+    public async Task Change_history_names_who_did_what_newest_first_owner_only()
+    {
+        using var phone = new Phone();
+        await phone.SetUpAsync();
+        var ramesh = await phone.AddAsync("Ramesh", 500);
+        phone.Clock.Advance(TimeSpan.FromMinutes(1));
+        await phone.EnterAsync(ramesh, Phone.Today, 3);
+
+        var audit = new AuditService(phone.Context);
+        var lines = (await audit.RecentAsync()).Value!;
+        Assert.Equal(AuditActions.EntrySaved, lines[0].Action);
+        Assert.Equal("Santhosh", lines[0].Who);
+        Assert.Contains("Ramesh 2026-11-23: 3", lines[0].After, StringComparison.Ordinal);
+        Assert.Equal(AuditActions.FactorySetUp, lines[^1].Action);
+
+        phone.Session.SignIn(ramesh);
+        Assert.Equal(ErrorCode.NotAllowed, (await audit.RecentAsync()).Error?.Code);
+    }
+}

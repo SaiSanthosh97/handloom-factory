@@ -75,6 +75,8 @@ public sealed class SyncScheduler
         try
         {
             report = await Engine.SyncAllAsync(cancellationToken);
+            await Engine.SendWeeklyNoticeIfDueAsync(cancellationToken); // owner phone, Saturday evening, once
+            await _services.GetRequiredService<UpdateNotifier>().CheckInBackgroundAsync(cancellationToken);
         }
         catch (OperationCanceledException)
         {

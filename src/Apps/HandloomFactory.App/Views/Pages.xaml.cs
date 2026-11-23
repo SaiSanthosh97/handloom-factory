@@ -109,6 +109,7 @@ public partial class HomePage : ContentPage
         {
             await _viewModel.LoadAsync();
             await _updates.CheckAndAnnounceAsync();
+            await UpdateNotifier.AskPermissionAsync();
         }
     }
 }
@@ -301,6 +302,28 @@ public partial class WorkerHomePage : ContentPage
         {
             await _viewModel.LoadAsync();
             await _updates.CheckAndAnnounceAsync();
+            await UpdateNotifier.AskPermissionAsync();
+        }
+    }
+}
+
+/// <summary>Owner: the change history.</summary>
+public partial class AuditPage : ContentPage
+{
+    private readonly AuditViewModel _viewModel;
+
+    public AuditPage(AuditViewModel viewModel)
+    {
+        InitializeComponent();
+        BindingContext = _viewModel = viewModel;
+    }
+
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+        if (SignIn.EnsureSignedIn())
+        {
+            await _viewModel.LoadAsync();
         }
     }
 }

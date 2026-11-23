@@ -104,6 +104,8 @@
             <Label Text="{Binding TotalsText}" FontFamily="OpenSansSemibold" HorizontalOptions="Center" />
             <Label Text="{Binding PaymentTotalsText}" Style="{StaticResource Subtle}" HorizontalOptions="Center" IsVisible="{Binding IsWeek}" />
             <Button Text="{x:Static s:AppResources.Report_MarkAllPaid}" Style="{StaticResource OutlineButton}" Command="{Binding MarkAllPaidCommand}" IsVisible="{Binding CanMarkAll}" />
+            <Button Text="{x:Static s:AppResources.Report_ExportCsv}" Style="{StaticResource LinkButton}" Command="{Binding ExportCsvCommand}" HorizontalOptions="Center"
+                    IsVisible="{Binding IsEmpty, Converter={StaticResource Not}}" />
         </VerticalStackLayout>
     </Grid>
 </ContentPage>

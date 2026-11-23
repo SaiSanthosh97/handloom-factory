@@ -354,3 +354,58 @@ public class UnlinkTests
         Assert.Equal(2, Assert.Single(await ramesh.EntriesAsync()).SareeCount);
     }
 }
+
+public class NotificationTests
+{
+    [Fact]
+    public async Task Worker_submission_notifies_the_owner_when_turned_on()
+    {
+        using var f = await new Factory().SetUpAsync();
+        var ramesh = await f.LinkAsync(f.Ramesh);
+
+        // Off by default: nothing is sent.
+        await ramesh.Production.SaveOwnTodayAsync(2);
+        await ramesh.SyncAsync();
+        Assert.Empty(f.Relay1.Notifications);
+
+        // The owner turns it on after linking: the topic reaches the worker's phone.
+        var topic = await f.Owner.Sync.SetNotificationsAsync(true);
+        Assert.StartsWith("hf-", topic, StringComparison.Ordinal);
+        await f.Owner.SyncAsync();
+        await ramesh.SyncAsync();
+
+        f.Clock.Advance(TimeSpan.FromMinutes(1));
+        await ramesh.Production.SaveOwnTodayAsync(3);
+        await ramesh.SyncAsync();
+        var notice = Assert.Single(f.Relay1.Notifications);
+        Assert.Equal((topic, "Sri Lakshmi Handlooms", "Ramesh submitted 3 sarees today"), notice);
+
+        // Turned off again: no more notices.
+        await f.Owner.Sync.SetNotificationsAsync(false);
+        await f.Owner.SyncAsync();
+        await ramesh.SyncAsync();
+        f.Clock.Advance(TimeSpan.FromMinutes(1));
+        await ramesh.Production.SaveOwnTodayAsync(4);
+        await ramesh.SyncAsync();
+        Assert.Single(f.Relay1.Notifications);
+    }
+
+    [Fact]
+    public async Task Weekly_payments_notice_on_saturday_evening_once()
+    {
+        using var f = await new Factory().SetUpAsync();
+        await f.Owner.Production.SaveDayAsync(Factory.Today, new Dictionary<string, int?> { [f.Ramesh.Id] = 2, [f.Suma.Id] = 1 });
+        await f.Owner.Sync.SetNotificationsAsync(true);
+        await f.Owner.SyncAsync(); // becomes the owner phone
+
+        Assert.False(await f.Owner.Sync.SendWeeklyNoticeIfDueAsync()); // Monday
+        f.Clock.Set(new DateTimeOffset(2026, 11, 28, 17, 0, 0, TimeSpan.FromHours(5.5)));
+        Assert.False(await f.Owner.Sync.SendWeeklyNoticeIfDueAsync()); // Saturday, before 18:00
+        f.Clock.Set(new DateTimeOffset(2026, 11, 28, 18, 30, 0, TimeSpan.FromHours(5.5)));
+        Assert.True(await f.Owner.Sync.SendWeeklyNoticeIfDueAsync());
+        Assert.False(await f.Owner.Sync.SendWeeklyNoticeIfDueAsync()); // once per week
+
+        var notice = Assert.Single(f.Relay1.Notifications);
+        Assert.Equal("Weekly payments ready: ₹1,450 for 2 workers", notice.Message);
+    }
+}

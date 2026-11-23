@@ -233,8 +233,38 @@ public sealed partial class ReportViewModel(ReportService reports, PaymentServic
         await LoadAsync();
     }
 
+    private PeriodReport? _shown;
+    private WeekPayments? _shownWeek;
+
+    /// <summary>The report on screen as a CSV file (opens in Excel), shared through WhatsApp, email, Drive…</summary>
+    [RelayCommand]
+    private async Task ExportCsvAsync()
+    {
+        if (_shown is not { } report)
+        {
+            return;
+        }
+
+        var title = Mode switch
+        {
+            ReportMode.Month => $"{AppResources.Report_Month}: {PeriodText}",
+            ReportMode.Year => $"{AppResources.Report_Year}: {PeriodText}",
+            _ => $"{AppResources.Report_Week}: {PeriodText}",
+        };
+        var payments = _shownWeek?.Rows.ToDictionary(r => r.Employee.Id, r => r.Payment);
+        var headings = new ReportCsv.Headings(
+            AppResources.Csv_Code, AppResources.Report_Worker, AppResources.Csv_Sarees, AppResources.Csv_Rate, AppResources.Csv_Earnings,
+            AppResources.Csv_Payment, AppResources.Report_PaidDate, AppResources.Csv_PaidAmount, AppResources.Report_Total, AppResources.Report_Varies,
+            AppResources.Csv_Paid, AppResources.Csv_ToPay);
+        var csv = ReportCsv.Write(title, report, payments, headings);
+        var name = $"handloom-{Mode.ToString().ToLowerInvariant()}-{report.Period.Start:yyyy-MM-dd}.csv";
+        await ShareFiles.ShareAsync(csv, name, "text/csv", title);
+    }
+
     private void Display(PeriodReport report, WeekPayments? week)
     {
+        _shown = report;
+        _shownWeek = week;
         PeriodText = Mode switch
         {
             ReportMode.Month => Show.Month(report.Period.Start),

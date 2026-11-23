@@ -563,8 +563,8 @@ Each step is a release (its own version, tag, tests and docs). The owner tests a
 | **0.1.0** | Owner phone only: set up factory, PIN login, add/edit/disable employees with rates (and rate changes), enter sarees for any employee and day, dashboard (today/week/month production and wages), weekly report, update alerts |
 | **0.2.0** | Weekly payments (mark paid, paid date, adjustments), employee history, monthly and yearly reports, **export all data / import (replace)** |
 | **0.3.0** | Worker phones: link by QR, worker PIN login, worker enters today's sarees, sync via ntfy, worker earnings and payments, worker export |
-| **0.4.0** | CSV report export, audit log screen (Kannada cancelled, C-005) |
-| **0.5.0** | ntfy push notifications, background update notification, polish from feedback |
+| **0.4.0** | CSV report export, audit log screen (Kannada cancelled, C-005). Released inside 0.5.0 (C-008) |
+| **0.5.0** | ntfy push notifications, background update notification, polish from feedback. Includes 0.4.0 (C-009) |
 
 ---
 

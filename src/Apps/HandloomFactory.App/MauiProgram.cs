@@ -1,3 +1,4 @@
+using HandloomFactory.App.Resources.Strings;
 using HandloomFactory.App.Services;
 using HandloomFactory.App.ViewModels;
 using HandloomFactory.App.Views;
@@ -31,6 +32,7 @@ public static class MauiProgram
         services.AddSingleton<Dialogs>();
         services.AddSingleton<UpdateService>();
         services.AddSingleton<SessionLock>();
+        services.AddSingleton<UpdateNotifier>();
 
         // Use cases. The start screen opens the database before any of these is first used.
         services.AddSingleton(sp =>
@@ -47,6 +49,7 @@ public static class MauiProgram
         services.AddSingleton<PaymentService>();
         services.AddSingleton<DataService>();
         services.AddSingleton<WorkerService>();
+        services.AddSingleton<AuditService>();
 
         // Sync (0.3.0): the engine writes to the inner store (records from other phones are not echoed back).
         services.AddSingleton<IRelayFactory>(sp => new NtfyRelayFactory(sp.GetRequiredService<HttpClient>(), "HandloomFactory"));
@@ -54,7 +57,11 @@ public static class MauiProgram
         {
             var host = sp.GetRequiredService<AppHost>();
             host.Open();
-            return new SyncEngine(host.Inner, host.SyncStore, sp.GetRequiredService<IRelayFactory>(), host.Clock, AppInfo.Current.VersionString);
+            return new SyncEngine(host.Inner, host.SyncStore, sp.GetRequiredService<IRelayFactory>(), host.Clock, AppInfo.Current.VersionString)
+            {
+                SubmittedText = (name, count) => Show.Format(AppResources.Notify_Submitted, name, count),
+                WeeklyText = (total, workers) => Show.Format(AppResources.Notify_Weekly, total, workers),
+            };
         });
         services.AddSingleton<SyncScheduler>();
 
@@ -83,6 +90,8 @@ public static class MauiProgram
         services.AddTransient<LinkPhonePage>();
         services.AddTransient<JoinViewModel>();
         services.AddTransient<JoinPage>();
+        services.AddTransient<AuditViewModel>();
+        services.AddTransient<AuditPage>();
         services.AddSingleton<WorkerHomeViewModel>();
         services.AddSingleton<WorkerHomePage>();
 

@@ -64,3 +64,21 @@ public static class DataFiles
         }
     }
 }
+
+/// <summary>Shares a generated file (CSV reports, change history) through Android's share sheet.</summary>
+public static class ShareFiles
+{
+    public static async Task ShareAsync(byte[] content, string fileName, string mimeType, string title)
+    {
+        var folder = Path.Combine(FileSystem.CacheDirectory, "shared");
+        Directory.CreateDirectory(folder);
+        foreach (var old in Directory.GetFiles(folder))
+        {
+            File.Delete(old); // only the latest shared file stays in the cache
+        }
+
+        var path = Path.Combine(folder, fileName);
+        await File.WriteAllBytesAsync(path, content);
+        await Share.Default.RequestAsync(new ShareFileRequest(title, new ShareFile(path, mimeType)));
+    }
+}
