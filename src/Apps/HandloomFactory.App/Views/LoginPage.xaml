@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:s="clr-namespace:HandloomFactory.App.Resources.Strings"
+             xmlns:vm="clr-namespace:HandloomFactory.App.ViewModels"
+             x:Class="HandloomFactory.App.Views.LoginPage"
+             x:DataType="vm:LoginViewModel">
+    <ScrollView>
+        <VerticalStackLayout Padding="20,40" Spacing="12">
+            <Label Text="{x:Static s:AppResources.AppName}" Style="{StaticResource Heading}" FontSize="28" HorizontalOptions="Center" />
+
+            <!-- Names: only when more than one person uses this phone. -->
+            <VerticalStackLayout IsVisible="{Binding ShowPeople}" Spacing="8">
+                <Label Text="{x:Static s:AppResources.Login_Title}" Style="{StaticResource SectionLabel}" />
+                <VerticalStackLayout BindableLayout.ItemsSource="{Binding People}" Spacing="8">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate x:DataType="vm:PersonItem">
+                            <Button Text="{Binding Name}" Style="{StaticResource OutlineButton}"
+                                    Command="{Binding ChooseCommand, Source={RelativeSource AncestorType={x:Type vm:LoginViewModel}}, x:DataType=vm:LoginViewModel}"
+                                    CommandParameter="{Binding .}">
+                                <Button.Triggers>
+                                    <DataTrigger TargetType="Button" Binding="{Binding IsSelected}" Value="True">
+                                        <Setter Property="BackgroundColor" Value="{StaticResource Primary}" />
+                                        <Setter Property="TextColor" Value="{StaticResource OnPrimary}" />
+                                    </DataTrigger>
+                                </Button.Triggers>
+                            </Button>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </VerticalStackLayout>
+            </VerticalStackLayout>
+
+            <Label Text="{Binding Selected.Name}" Style="{StaticResource Heading}" HorizontalOptions="Center" Margin="0,24,0,0" />
+            <Label Text="{x:Static s:AppResources.Login_EnterPin}" HorizontalOptions="Center" Style="{StaticResource Subtle}" />
+            <Entry x:Name="PinEntry" Text="{Binding Pin}" MaxLength="4" Keyboard="Numeric" IsPassword="True"
+                   FontSize="40" HorizontalTextAlignment="Center" WidthRequest="200" HorizontalOptions="Center" />
+            <Label Text="{Binding Message}" TextColor="{StaticResource Danger}" HorizontalOptions="Center" HorizontalTextAlignment="Center"
+                   IsVisible="{Binding Message, Converter={StaticResource NotEmpty}}" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

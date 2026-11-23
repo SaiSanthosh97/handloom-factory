@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:s="clr-namespace:HandloomFactory.App.Resources.Strings"
+             xmlns:vm="clr-namespace:HandloomFactory.App.ViewModels"
+             x:Class="HandloomFactory.App.Views.HomePage"
+             x:DataType="vm:HomeViewModel"
+             Title="{x:Static s:AppResources.AppName}">
+    <ScrollView>
+        <VerticalStackLayout Padding="16" Spacing="12">
+
+            <!-- New version banner (D16): stays until the update is installed. -->
+            <Border IsVisible="{Binding HasUpdate}" StrokeThickness="0" StrokeShape="RoundRectangle 12" Padding="16,12"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource BannerLight}, Dark={StaticResource BannerDark}}">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding InstallUpdateCommand}" />
+                </Border.GestureRecognizers>
+                <Label Text="{Binding UpdateText}" FontFamily="OpenSansSemibold" />
+            </Border>
+
+            <Label Text="{Binding Greeting}" Style="{StaticResource Heading}" />
+
+            <!-- Today -->
+            <Border Style="{StaticResource Card}" Padding="16">
+                <VerticalStackLayout Spacing="6">
+                    <Label Text="{Binding TodayTitle}" Style="{StaticResource Subtle}" />
+                    <Label Text="{Binding TodaySarees}" FontSize="34" FontFamily="OpenSansSemibold" />
+                    <Label Text="{Binding MissingText}" TextColor="{StaticResource Warning}" IsVisible="{Binding MissingText, Converter={StaticResource NotEmpty}}" />
+                    <Label Text="{x:Static s:AppResources.Home_AllEntered}" TextColor="{StaticResource Ok}" IsVisible="{Binding AllEntered}" />
+                    <Button Text="{x:Static s:AppResources.Home_EnterToday}" Command="{Binding EnterTodayCommand}" Margin="0,8,0,0" IsVisible="{Binding HasWorkers}" />
+                    <Label Text="{x:Static s:AppResources.Home_NoWorkers}" IsVisible="{Binding HasWorkers, Converter={StaticResource Not}}" />
+                    <Button Text="{x:Static s:AppResources.Home_AddWorkers}" Command="{Binding AddWorkersCommand}" IsVisible="{Binding HasWorkers, Converter={StaticResource Not}}" />
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- This pay week (Sunday–Saturday) -->
+            <Border Style="{StaticResource Card}" Padding="16">
+                <VerticalStackLayout Spacing="4">
+                    <Label Text="{x:Static s:AppResources.Home_ThisWeek}" Style="{StaticResource Subtle}" />
+                    <Label Text="{Binding WeekRange}" Style="{StaticResource Subtle}" FontSize="14" />
+                    <Label Text="{Binding WeekSarees}" FontSize="26" FontFamily="OpenSansSemibold" />
+                    <Label Text="{Binding WeekWages}" FontSize="22" />
+                    <Label Text="{Binding PayDayText}" Style="{StaticResource Subtle}" />
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- This month -->
+            <Border Style="{StaticResource Card}" Padding="16">
+                <VerticalStackLayout Spacing="4">
+                    <Label Text="{Binding MonthName}" Style="{StaticResource Subtle}" />
+                    <Label Text="{Binding MonthSarees}" FontSize="26" FontFamily="OpenSansSemibold" />
+                    <Label Text="{Binding MonthWages}" FontSize="22" />
+                </VerticalStackLayout>
+            </Border>
+
+            <Border Style="{StaticResource Card}" Padding="16">
+                <HorizontalStackLayout Spacing="8">
+                    <Label Text="{x:Static s:AppResources.Home_Workers}" Style="{StaticResource Subtle}" />
+                    <Label Text="{Binding WorkersText}" FontFamily="OpenSansSemibold" />
+                </HorizontalStackLayout>
+            </Border>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

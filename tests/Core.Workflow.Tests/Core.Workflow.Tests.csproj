@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Use cases tested end to end against a real encrypted SQLite database (Storage.Sqlite). -->
+  <ItemGroup>
+    <ProjectReference Include="../../src/Components/Core.Workflow/Core.Workflow.csproj" />
+    <ProjectReference Include="../../src/Components/Storage.Sqlite/Storage.Sqlite.csproj" />
+  </ItemGroup>
+</Project>

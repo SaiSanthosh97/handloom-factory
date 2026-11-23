@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- A folded saree with a gold border on a loom beam: "handloom production". Inside the adaptive-icon safe zone. -->
+<svg width="456" height="456" viewBox="0 0 456 456" xmlns="http://www.w3.org/2000/svg">
+  <rect x="118" y="132" width="220" height="22" rx="11" fill="#F2C14E"/>
+  <path d="M140 154 H316 V300 a12 12 0 0 1 -12 12 H152 a12 12 0 0 1 -12 -12 Z" fill="#FFFFFF"/>
+  <rect x="140" y="270" width="176" height="18" fill="#F2C14E"/>
+  <rect x="140" y="294" width="176" height="6" fill="#F2C14E"/>
+  <rect x="172" y="170" width="10" height="90" fill="#7A1F3D"/>
+  <rect x="200" y="170" width="10" height="90" fill="#7A1F3D"/>
+  <rect x="228" y="170" width="10" height="90" fill="#7A1F3D"/>
+  <rect x="256" y="170" width="10" height="90" fill="#7A1F3D"/>
+  <rect x="284" y="170" width="10" height="90" fill="#7A1F3D"/>
+</svg>

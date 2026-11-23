@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <!-- Application layer: the use cases (commands and queries), role checks, validation and audit. -->
+    <TargetFramework>net10.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Core.Factory\Core.Factory.csproj" />
+    <ProjectReference Include="..\Core.Reports\Core.Reports.csproj" />
+    <ProjectReference Include="..\Core.Security\Core.Security.csproj" />
+  </ItemGroup>
+</Project>

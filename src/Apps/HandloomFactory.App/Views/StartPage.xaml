@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:s="clr-namespace:HandloomFactory.App.Resources.Strings"
+             x:Class="HandloomFactory.App.Views.StartPage">
+    <VerticalStackLayout VerticalOptions="Center" Spacing="16">
+        <ActivityIndicator IsRunning="True" Color="{StaticResource Primary}" />
+        <Label Text="{x:Static s:AppResources.Start_Opening}" HorizontalOptions="Center" Style="{StaticResource Subtle}" />
+    </VerticalStackLayout>
+</ContentPage>

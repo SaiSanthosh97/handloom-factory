@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <!-- Dashboard figures and weekly / monthly / yearly reports, computed from entries and rate history. -->
+    <TargetFramework>net10.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Core.Factory\Core.Factory.csproj" />
+  </ItemGroup>
+</Project>

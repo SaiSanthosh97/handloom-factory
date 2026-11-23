@@ -1,0 +1,6 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <!-- PIN hashing and database-key wrapping. Plain .NET (platform key vaults live in Device.Security). -->
+    <TargetFramework>net10.0</TargetFramework>
+  </PropertyGroup>
+</Project>

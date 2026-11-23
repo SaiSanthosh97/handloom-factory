@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="../../src/Components/Core.Factory/Core.Factory.csproj" />
+    <ProjectReference Include="../../src/Components/Core.Reports/Core.Reports.csproj" />
+    <ProjectReference Include="../../src/Components/Core.Security/Core.Security.csproj" />
+  </ItemGroup>
+</Project>

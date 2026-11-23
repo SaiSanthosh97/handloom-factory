@@ -1,0 +1,55 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<!-- Release signing key lives outside the repository (%USERPROFILE%\.handloomfactory\signing.props). Without it, builds use the debug key. -->
+	<Import Project="$(UserProfile)\.handloomfactory\signing.props" Condition="'$(Configuration)' == 'Release' and Exists('$(UserProfile)\.handloomfactory\signing.props')" />
+
+	<PropertyGroup>
+		<TargetFrameworks>net10.0-android</TargetFrameworks>
+		<OutputType>Exe</OutputType>
+		<RootNamespace>HandloomFactory.App</RootNamespace>
+		<AssemblyName>HandloomFactory.App</AssemblyName>
+		<UseMaui>true</UseMaui>
+		<SingleProject>true</SingleProject>
+		<MauiXamlInflator>SourceGen</MauiXamlInflator>
+
+		<ApplicationTitle>Handloom Factory</ApplicationTitle>
+		<!-- Must never change after the first release, or phones treat updates as a different app. -->
+		<ApplicationId>io.github.saisanthosh97.handloomfactory</ApplicationId>
+
+		<!-- ApplicationDisplayVersion must match the GitHub release tag (v0.1.0) for update checks.
+		     ApplicationVersion must go up by one with every release. -->
+		<ApplicationDisplayVersion>0.1.0</ApplicationDisplayVersion>
+		<ApplicationVersion>1</ApplicationVersion>
+
+		<!-- Android 6.0+ (D19): covers most phones sold from 2016 on. -->
+		<SupportedOSPlatformVersion>23.0</SupportedOSPlatformVersion>
+		<!-- Phones: 64-bit and 32-bit ARM (many 2016-era phones run a 32-bit Android). -p:EmulatorBuild=true adds the x86-64 emulator. -->
+		<RuntimeIdentifiers Condition="'$(Configuration)' == 'Release'">android-arm64;android-arm</RuntimeIdentifiers>
+		<RuntimeIdentifiers Condition="'$(EmulatorBuild)' == 'true'">android-arm64;android-arm;android-x64</RuntimeIdentifiers>
+		<AndroidPackageFormats Condition="'$(Configuration)' == 'Release'">apk</AndroidPackageFormats>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#7A1F3D" />
+		<MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#7A1F3D" BaseSize="128,128" />
+		<MauiImage Include="Resources\Images\*" />
+		<MauiFont Include="Resources\Fonts\*" />
+		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
+		<!-- UI text. Kannada goes in AppResources.kn.resx (release 0.4.0). -->
+		<EmbeddedResource Update="Resources\Strings\AppResources.resx" Generator="ResXFileCodeGenerator" StronglyTypedLanguage="CSharp" StronglyTypedClassName="AppResources" StronglyTypedNamespace="HandloomFactory.App.Resources.Strings" StronglyTypedFileName="$(IntermediateOutputPath)AppResources.Designer.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="CommunityToolkit.Mvvm" />
+		<PackageReference Include="Microsoft.Maui.Controls" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Debug" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\Components\Core.Workflow\Core.Workflow.csproj" />
+		<ProjectReference Include="..\..\Components\Core.AppUpdater\Core.AppUpdater.csproj" />
+		<ProjectReference Include="..\..\Components\Storage.Sqlite\Storage.Sqlite.csproj" />
+		<ProjectReference Include="..\..\Components\Device.Security\Device.Security.csproj" />
+	</ItemGroup>
+
+</Project>

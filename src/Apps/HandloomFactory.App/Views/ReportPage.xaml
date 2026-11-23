@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:s="clr-namespace:HandloomFactory.App.Resources.Strings"
+             xmlns:vm="clr-namespace:HandloomFactory.App.ViewModels"
+             x:Class="HandloomFactory.App.Views.ReportPage"
+             x:DataType="vm:ReportViewModel"
+             Title="{x:Static s:AppResources.Report_Title}">
+    <Grid RowDefinitions="Auto,*,Auto">
+        <VerticalStackLayout Grid.Row="0" Padding="16,12,16,4" Spacing="4">
+            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="8">
+                <Button Grid.Column="0" Text="◀" Style="{StaticResource StepButton}" Command="{Binding PreviousCommand}" />
+                <Label Grid.Column="1" Text="{Binding WeekText}" FontFamily="OpenSansSemibold" HorizontalOptions="Center" VerticalOptions="Center" HorizontalTextAlignment="Center" />
+                <Button Grid.Column="2" Text="▶" Style="{StaticResource StepButton}" Command="{Binding NextCommand}" IsEnabled="{Binding CanGoNext}" />
+            </Grid>
+            <Label Text="{Binding PayDayText}" Style="{StaticResource Subtle}" HorizontalOptions="Center" />
+            <Button Text="{x:Static s:AppResources.Report_ThisWeek}" Style="{StaticResource LinkButton}" Command="{Binding ThisWeekCommand}" HorizontalOptions="Center" IsVisible="{Binding CanGoNext}" />
+        </VerticalStackLayout>
+
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Padding="16,4" Spacing="8">
+                <Label Text="{x:Static s:AppResources.Report_Empty}" IsVisible="{Binding IsEmpty}" Margin="0,24" />
+                <VerticalStackLayout BindableLayout.ItemsSource="{Binding Cards}" Spacing="8">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate x:DataType="vm:ReportCard">
+                            <Border Style="{StaticResource Card}" Padding="12">
+                                <VerticalStackLayout Spacing="6">
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <Label Grid.Column="0" Text="{Binding Name}" FontFamily="OpenSansSemibold" FontSize="20" />
+                                        <Label Grid.Column="1" Text="{Binding Earnings}" FontFamily="OpenSansSemibold" FontSize="20" />
+                                    </Grid>
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <Label Grid.Column="0" Text="{Binding Sarees}" />
+                                        <Label Grid.Column="1" Text="{Binding Rate}" Style="{StaticResource Subtle}" />
+                                    </Grid>
+                                    <!-- Sun … Sat -->
+                                    <FlexLayout Direction="Row" JustifyContent="SpaceBetween" BindableLayout.ItemsSource="{Binding Days}">
+                                        <BindableLayout.ItemTemplate>
+                                            <DataTemplate x:DataType="vm:DayCell">
+                                                <VerticalStackLayout WidthRequest="40">
+                                                    <Label Text="{Binding Weekday}" Style="{StaticResource Subtle}" FontSize="13" HorizontalOptions="Center" />
+                                                    <Label Text="{Binding Count}" FontSize="18" HorizontalOptions="Center" />
+                                                </VerticalStackLayout>
+                                            </DataTemplate>
+                                        </BindableLayout.ItemTemplate>
+                                    </FlexLayout>
+                                </VerticalStackLayout>
+                            </Border>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </VerticalStackLayout>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <Label Grid.Row="2" Text="{Binding TotalsText}" FontFamily="OpenSansSemibold" Padding="16,8,16,12" HorizontalOptions="Center" />
+    </Grid>
+</ContentPage>

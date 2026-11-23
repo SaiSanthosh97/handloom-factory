@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<?xaml-comp compile="true" ?>
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <!-- Status colours, always paired with text. -->
+    <Color x:Key="Expired">#B3261E</Color>
+    <Color x:Key="Danger">#B3261E</Color>
+    <Color x:Key="Warning">#8A4B00</Color>
+    <Color x:Key="Ok">#1E7B34</Color>
+
+    <!-- Handloom maroon (distinct from the owner's teal apps). -->
+    <Color x:Key="Primary">#7A1F3D</Color>
+    <Color x:Key="OnPrimary">#FFFFFF</Color>
+    <Color x:Key="PrimaryDark">#FFB1C5</Color>
+    <Color x:Key="OnPrimaryDark">#5E0B25</Color>
+
+    <Color x:Key="PageLight">#FFFFFF</Color>
+    <Color x:Key="PageDark">#151112</Color>
+    <Color x:Key="CardLight">#FAF0F2</Color>
+    <Color x:Key="CardDark">#2A2022</Color>
+    <Color x:Key="TextLight">#1D1A1B</Color>
+    <Color x:Key="TextDark">#F1E9EA</Color>
+    <Color x:Key="SubtleTextLight">#4E4447</Color>
+    <Color x:Key="SubtleTextDark">#D4C2C6</Color>
+    <Color x:Key="BorderLight">#D8C2C8</Color>
+    <Color x:Key="BorderDark">#4E4447</Color>
+    <Color x:Key="BannerLight">#FFF1C2</Color>
+    <Color x:Key="BannerDark">#4A3B00</Color>
+</ResourceDictionary>

@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <!-- Android Keystore: wraps the database key with a key that never leaves secure hardware. -->
+    <TargetFrameworks>net10.0-android</TargetFrameworks>
+    <SupportedOSPlatformVersion>23</SupportedOSPlatformVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Core.Security\Core.Security.csproj" />
+  </ItemGroup>
+</Project>

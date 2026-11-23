@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- All UI text (English). Kannada: AppResources.kn.resx (release 0.4.0). Keys are grouped by screen. -->
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="AppName" xml:space="preserve"><value>Handloom Factory</value></data>
+  <data name="Common_OK" xml:space="preserve"><value>OK</value></data>
+  <data name="Common_Cancel" xml:space="preserve"><value>Cancel</value></data>
+  <data name="Common_Save" xml:space="preserve"><value>Save</value></data>
+  <data name="Common_Yes" xml:space="preserve"><value>Yes</value></data>
+  <data name="Common_No" xml:space="preserve"><value>No</value></data>
+  <data name="Common_Error" xml:space="preserve"><value>Something went wrong</value></data>
+  <data name="Common_Check" xml:space="preserve"><value>Please check</value></data>
+  <data name="Common_Sarees" xml:space="preserve"><value>{0} sarees</value></data>
+  <data name="Common_OneSaree" xml:space="preserve"><value>1 saree</value></data>
+  <data name="Common_PerSaree" xml:space="preserve"><value>{0} per saree</value></data>
+  <data name="Start_Opening" xml:space="preserve"><value>Opening…</value></data>
+  <data name="Start_DbErrorTitle" xml:space="preserve"><value>Data can't be opened</value></data>
+  <data name="Start_DbErrorText" xml:space="preserve"><value>The app's data on this phone could not be opened (the phone's security key may have been reset). You can start fresh; existing data on this phone will be deleted.</value></data>
+  <data name="Start_StartFresh" xml:space="preserve"><value>Start fresh</value></data>
+  <data name="Setup_Title" xml:space="preserve"><value>Set up your factory</value></data>
+  <data name="Setup_Intro" xml:space="preserve"><value>You are the owner. You will add your workers next.</value></data>
+  <data name="Setup_FactoryName" xml:space="preserve"><value>Factory name</value></data>
+  <data name="Setup_OwnerName" xml:space="preserve"><value>Your name</value></data>
+  <data name="Setup_Pin" xml:space="preserve"><value>Choose a 4-digit PIN</value></data>
+  <data name="Setup_ConfirmPin" xml:space="preserve"><value>Type the same PIN again</value></data>
+  <data name="Setup_PinHint" xml:space="preserve"><value>You will type this PIN every time you open the app.</value></data>
+  <data name="Setup_Start" xml:space="preserve"><value>Start</value></data>
+  <data name="Login_Title" xml:space="preserve"><value>Who are you?</value></data>
+  <data name="Login_EnterPin" xml:space="preserve"><value>Enter your 4-digit PIN</value></data>
+  <data name="Login_WrongPin" xml:space="preserve"><value>Wrong PIN. {0} tries left.</value></data>
+  <data name="Login_WrongPinNoCount" xml:space="preserve"><value>Wrong PIN.</value></data>
+  <data name="Login_Locked" xml:space="preserve"><value>Too many wrong PINs. Please wait {0} seconds.</value></data>
+  <data name="Tab_Home" xml:space="preserve"><value>Home</value></data>
+  <data name="Tab_Entry" xml:space="preserve"><value>Sarees</value></data>
+  <data name="Tab_Workers" xml:space="preserve"><value>Workers</value></data>
+  <data name="Tab_Reports" xml:space="preserve"><value>Reports</value></data>
+  <data name="Tab_Settings" xml:space="preserve"><value>Settings</value></data>
+  <data name="Home_Hello" xml:space="preserve"><value>Hello, {0}</value></data>
+  <data name="Home_Today" xml:space="preserve"><value>Today</value></data>
+  <data name="Home_ThisWeek" xml:space="preserve"><value>This week</value></data>
+  <data name="Home_ThisMonth" xml:space="preserve"><value>This month</value></data>
+  <data name="Home_Wages" xml:space="preserve"><value>Wages {0}</value></data>
+  <data name="Home_Workers" xml:space="preserve"><value>Workers</value></data>
+  <data name="Home_ActiveWorkers" xml:space="preserve"><value>{0} active</value></data>
+  <data name="Home_NotEntered" xml:space="preserve"><value>Not entered yet today: {0}</value></data>
+  <data name="Home_AllEntered" xml:space="preserve"><value>Everyone's sarees are entered for today ✓</value></data>
+  <data name="Home_EnterToday" xml:space="preserve"><value>Enter today's sarees</value></data>
+  <data name="Home_NoWorkers" xml:space="preserve"><value>Start by adding your workers.</value></data>
+  <data name="Home_AddWorkers" xml:space="preserve"><value>Add workers</value></data>
+  <data name="Home_PayDay" xml:space="preserve"><value>Payday {0}</value></data>
+  <data name="Update_Banner" xml:space="preserve"><value>New version {0} is ready. Tap to install.</value></data>
+  <data name="Update_Title" xml:space="preserve"><value>App update</value></data>
+  <data name="Update_Available" xml:space="preserve"><value>Version {0} of Handloom Factory is available. Install it now? Your data is kept.</value></data>
+  <data name="Update_Install" xml:space="preserve"><value>Install</value></data>
+  <data name="Update_Later" xml:space="preserve"><value>Later</value></data>
+  <data name="Update_AllowInstall" xml:space="preserve"><value>Please allow "Install unknown apps" for Handloom Factory on the next screen, then come back and tap the update again.</value></data>
+  <data name="Update_Damaged" xml:space="preserve"><value>The download was damaged. Please try again.</value></data>
+  <data name="Update_Failed" xml:space="preserve"><value>The update could not be downloaded. Please check the internet and try again.</value></data>
+  <data name="Update_UpToDate" xml:space="preserve"><value>You have the latest version ({0}).</value></data>
+  <data name="Update_CheckFailed" xml:space="preserve"><value>Could not check for updates. Please check the internet.</value></data>
+  <data name="Entry_Title" xml:space="preserve"><value>Sarees for a day</value></data>
+  <data name="Entry_Today" xml:space="preserve"><value>Today</value></data>
+  <data name="Entry_Total" xml:space="preserve"><value>Total: {0} sarees</value></data>
+  <data name="Entry_NoRate" xml:space="preserve"><value>No rate on this day</value></data>
+  <data name="Entry_ByWorker" xml:space="preserve"><value>entered by worker</value></data>
+  <data name="Entry_Saved" xml:space="preserve"><value>Saved</value></data>
+  <data name="Entry_NothingChanged" xml:space="preserve"><value>No changes to save</value></data>
+  <data name="Entry_NoWorkers" xml:space="preserve"><value>No workers yet. Add workers in the Workers tab.</value></data>
+  <data name="Entry_DiscardTitle" xml:space="preserve"><value>Unsaved numbers</value></data>
+  <data name="Entry_DiscardText" xml:space="preserve"><value>You typed numbers that are not saved. Leave without saving?</value></data>
+  <data name="Entry_Discard" xml:space="preserve"><value>Leave</value></data>
+  <data name="Entry_NotANumber" xml:space="preserve"><value>Please type a whole number for {0}.</value></data>
+  <data name="Entry_Disabled" xml:space="preserve"><value>(disabled)</value></data>
+  <data name="Entry_Hint" xml:space="preserve"><value>Leave a box empty if the worker did not work that day.</value></data>
+  <data name="Workers_Title" xml:space="preserve"><value>Workers</value></data>
+  <data name="Workers_Add" xml:space="preserve"><value>Add worker</value></data>
+  <data name="Workers_Disabled" xml:space="preserve"><value>Disabled</value></data>
+  <data name="Workers_Empty" xml:space="preserve"><value>No workers yet. Tap "Add worker".</value></data>
+  <data name="Worker_NewTitle" xml:space="preserve"><value>Add worker</value></data>
+  <data name="Worker_EditTitle" xml:space="preserve"><value>Worker</value></data>
+  <data name="Worker_Name" xml:space="preserve"><value>Full name</value></data>
+  <data name="Worker_Phone" xml:space="preserve"><value>Phone number (optional)</value></data>
+  <data name="Worker_Rate" xml:space="preserve"><value>Rate per saree (₹)</value></data>
+  <data name="Worker_RateFrom" xml:space="preserve"><value>Rate applies from</value></data>
+  <data name="Worker_RateFromHint" xml:space="preserve"><value>Entries before this day can't be saved for this worker.</value></data>
+  <data name="Worker_Code" xml:space="preserve"><value>Code {0}</value></data>
+  <data name="Worker_ThisWeek" xml:space="preserve"><value>This week: {0} sarees · {1}</value></data>
+  <data name="Worker_ThisMonth" xml:space="preserve"><value>This month: {0} sarees · {1}</value></data>
+  <data name="Worker_Today" xml:space="preserve"><value>Today: {0}</value></data>
+  <data name="Worker_NotEntered" xml:space="preserve"><value>not entered</value></data>
+  <data name="Worker_RateHistory" xml:space="preserve"><value>Rate history</value></data>
+  <data name="Worker_RateFromItem" xml:space="preserve"><value>{0} per saree from {1}</value></data>
+  <data name="Worker_ChangeRate" xml:space="preserve"><value>Change rate</value></data>
+  <data name="Worker_NewRate" xml:space="preserve"><value>New rate per saree (₹)</value></data>
+  <data name="Worker_NewRateFrom" xml:space="preserve"><value>New rate applies from</value></data>
+  <data name="Worker_RateChanged" xml:space="preserve"><value>Rate changed</value></data>
+  <data name="Worker_Disable" xml:space="preserve"><value>Disable worker</value></data>
+  <data name="Worker_Enable" xml:space="preserve"><value>Enable worker</value></data>
+  <data name="Worker_DisableTitle" xml:space="preserve"><value>Disable {0}?</value></data>
+  <data name="Worker_DisableText" xml:space="preserve"><value>{0} will no longer appear in daily entry. Their history and wages are kept, and you can enable them again later.</value></data>
+  <data name="Worker_Saved" xml:space="preserve"><value>Saved</value></data>
+  <data name="Worker_DisabledNote" xml:space="preserve"><value>This worker is disabled.</value></data>
+  <data name="Worker_Details" xml:space="preserve"><value>Details</value></data>
+  <data name="Report_Title" xml:space="preserve"><value>Weekly report</value></data>
+  <data name="Report_PayDay" xml:space="preserve"><value>Payday: {0}</value></data>
+  <data name="Report_Worker" xml:space="preserve"><value>Worker</value></data>
+  <data name="Report_Total" xml:space="preserve"><value>Total</value></data>
+  <data name="Report_Rate" xml:space="preserve"><value>Rate</value></data>
+  <data name="Report_Earnings" xml:space="preserve"><value>Earnings</value></data>
+  <data name="Report_Varies" xml:space="preserve"><value>varies</value></data>
+  <data name="Report_Totals" xml:space="preserve"><value>Total: {0} sarees · {1}</value></data>
+  <data name="Report_Previous" xml:space="preserve"><value>◀ Previous</value></data>
+  <data name="Report_Next" xml:space="preserve"><value>Next ▶</value></data>
+  <data name="Report_ThisWeek" xml:space="preserve"><value>This week</value></data>
+  <data name="Report_Empty" xml:space="preserve"><value>No workers yet.</value></data>
+  <data name="Settings_Title" xml:space="preserve"><value>Settings</value></data>
+  <data name="Settings_Factory" xml:space="preserve"><value>Factory</value></data>
+  <data name="Settings_LoggedInAs" xml:space="preserve"><value>Logged in as {0}</value></data>
+  <data name="Settings_Version" xml:space="preserve"><value>Version {0}</value></data>
+  <data name="Settings_CheckUpdates" xml:space="preserve"><value>Check for updates</value></data>
+  <data name="Settings_ChangePin" xml:space="preserve"><value>Change my PIN</value></data>
+  <data name="Settings_CurrentPin" xml:space="preserve"><value>Current PIN</value></data>
+  <data name="Settings_NewPin" xml:space="preserve"><value>New 4-digit PIN</value></data>
+  <data name="Settings_ConfirmPin" xml:space="preserve"><value>New PIN again</value></data>
+  <data name="Settings_PinChanged" xml:space="preserve"><value>PIN changed</value></data>
+  <data name="Settings_Logout" xml:space="preserve"><value>Log out</value></data>
+  <data name="Settings_About" xml:space="preserve"><value>Handloom Factory · free and open source</value></data>
+  <data name="Error_NotAllowed" xml:space="preserve"><value>You are not allowed to do this.</value></data>
+  <data name="Error_NotFound" xml:space="preserve"><value>This was not found. It may have been removed.</value></data>
+  <data name="Error_NameRequired" xml:space="preserve"><value>Please enter a name.</value></data>
+  <data name="Error_PinMustBeFourDigits" xml:space="preserve"><value>The PIN must be exactly 4 digits.</value></data>
+  <data name="Error_PinsDoNotMatch" xml:space="preserve"><value>The two PINs are not the same.</value></data>
+  <data name="Error_WrongPin" xml:space="preserve"><value>Wrong PIN.</value></data>
+  <data name="Error_LockedOut" xml:space="preserve"><value>Too many wrong PINs. Please wait and try again.</value></data>
+  <data name="Error_RateInvalid" xml:space="preserve"><value>Please enter a rate more than ₹0 (for example 500 or 450.50).</value></data>
+  <data name="Error_CountOutOfRange" xml:space="preserve"><value>Sarees per day must be between 0 and {0}.</value></data>
+  <data name="Error_FutureDate" xml:space="preserve"><value>You can't enter sarees for a future day.</value></data>
+  <data name="Error_NoRateOnDate" xml:space="preserve"><value>No rate is set for this day. Open the worker and set a rate that applies from this day or earlier.</value></data>
+  <data name="Error_AlreadySetUp" xml:space="preserve"><value>The factory is already set up on this phone.</value></data>
+  <data name="Error_PhoneInvalid" xml:space="preserve"><value>Please enter a 10-digit phone number, or leave it empty.</value></data>
+  <data name="Error_ForWorker" xml:space="preserve"><value>{0}: {1}</value></data>
+</root>

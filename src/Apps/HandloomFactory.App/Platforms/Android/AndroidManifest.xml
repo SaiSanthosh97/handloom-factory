@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+	<!-- No Android cloud backup or device-to-device copy: wages stay on the phone. The app's own export is the way to
+	     move data (D18). HTTPS only. -->
+	<application
+		android:allowBackup="false"
+		android:fullBackupContent="false"
+		android:dataExtractionRules="@xml/data_extraction_rules"
+		android:usesCleartextTraffic="false"
+		android:icon="@mipmap/appicon"
+		android:roundIcon="@mipmap/appicon_round"
+		android:supportsRtl="true"></application>
+
+	<!-- Update checks against GitHub Releases (and phone sync from 0.3.0). -->
+	<uses-permission android:name="android.permission.INTERNET" />
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+	<!-- In-app updates from GitHub Releases ("Install unknown apps" is asked once). -->
+	<uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+</manifest>

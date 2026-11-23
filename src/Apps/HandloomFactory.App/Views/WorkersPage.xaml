@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:s="clr-namespace:HandloomFactory.App.Resources.Strings"
+             xmlns:vm="clr-namespace:HandloomFactory.App.ViewModels"
+             x:Class="HandloomFactory.App.Views.WorkersPage"
+             x:DataType="vm:WorkersViewModel"
+             Title="{x:Static s:AppResources.Workers_Title}">
+    <Grid RowDefinitions="*,Auto">
+        <ScrollView Grid.Row="0">
+            <VerticalStackLayout Padding="16" Spacing="8">
+                <Label Text="{x:Static s:AppResources.Workers_Empty}" IsVisible="{Binding IsEmpty}" Margin="0,24" />
+                <VerticalStackLayout BindableLayout.ItemsSource="{Binding Workers}" Spacing="8">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate x:DataType="vm:WorkerListItem">
+                            <Border Style="{StaticResource Card}" Padding="16,12">
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding OpenCommand, Source={RelativeSource AncestorType={x:Type vm:WorkersViewModel}}, x:DataType=vm:WorkersViewModel}" CommandParameter="{Binding .}" />
+                                </Border.GestureRecognizers>
+                                <Border.Triggers>
+                                    <DataTrigger TargetType="Border" Binding="{Binding IsActive}" Value="False">
+                                        <Setter Property="Opacity" Value="0.6" />
+                                    </DataTrigger>
+                                </Border.Triggers>
+                                <VerticalStackLayout>
+                                    <Label Text="{Binding Name}" FontFamily="OpenSansSemibold" FontSize="20" />
+                                    <Label Text="{Binding Detail}" Style="{StaticResource Subtle}" />
+                                </VerticalStackLayout>
+                            </Border>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </VerticalStackLayout>
+            </VerticalStackLayout>
+        </ScrollView>
+        <Button Grid.Row="1" Text="{x:Static s:AppResources.Workers_Add}" Command="{Binding AddCommand}" Margin="16,8,16,12" />
+    </Grid>
+</ContentPage>

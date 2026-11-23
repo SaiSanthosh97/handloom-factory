@@ -1,0 +1,19 @@
+# Technical Design Documents
+
+TD-00 is the overall design. After that there is one document per implemented feature. Each one explains **what** was built and **how** it works, down to the small details. It also covers **why** each approach was chosen over the alternatives, the trade-offs and edge cases, and how the feature is tested.
+
+Documents are updated in the same change as the code, and every change is logged in [../CHANGES.md](../CHANGES.md).
+
+| # | Topic | Components | Status |
+|---|---|---|---|
+| [TD-00](TD-00-Architecture.md) | Overall architecture: components, data model, wage and pay-week rules, PIN login, owner-hub sync, linking, notifications, background work, testing | all | Designed |
+| [TD-01](TD-01-Release-0.1.0-Owner-Basics.md) | Release 0.1.0: foundation, money and pay weeks, PIN login, workers and rates, day entry, dashboard, weekly report, encrypted storage, update alerts, Android 6.0+ | `Core.*`, `Storage.Sqlite`, `Device.Security`, App | Implemented |
+
+Planned, one per release (the release plan is in requirements.md):
+
+| # | Topic | Components |
+|---|---|---|
+| TD-02 | Release 0.2.0: payments and adjustments, worker history, monthly and yearly reports, data export and import | `Core.Factory`, `Core.Workflow`, `Core.Reports` |
+| TD-03 | Release 0.3.0: owner-hub sync, phone linking, worker app | `Core.Relay`, `Core.Sync`, App |
+| TD-04 | Release 0.4.0: CSV reports, audit log screen | App, `Core.Reports` |
+| TD-05 | Release 0.5.0: ntfy notifications, background jobs | `Core.Sync`, `Device.BackgroundWork` |

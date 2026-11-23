@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Same maroon as Resources/Styles/Colors.xaml; used by Android for the status bar and controls. -->
+    <color name="colorPrimary">#7A1F3D</color>
+    <color name="colorPrimaryDark">#5E0B25</color>
+    <color name="colorAccent">#7A1F3D</color>
+</resources>

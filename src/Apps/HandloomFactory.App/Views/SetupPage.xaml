@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:s="clr-namespace:HandloomFactory.App.Resources.Strings"
+             xmlns:vm="clr-namespace:HandloomFactory.App.ViewModels"
+             x:Class="HandloomFactory.App.Views.SetupPage"
+             x:DataType="vm:SetupViewModel">
+    <ScrollView>
+        <VerticalStackLayout Padding="20,32" Spacing="10">
+            <Label Text="{x:Static s:AppResources.AppName}" Style="{StaticResource Subtle}" />
+            <Label Text="{x:Static s:AppResources.Setup_Title}" Style="{StaticResource Heading}" FontSize="28" />
+            <Label Text="{x:Static s:AppResources.Setup_Intro}" Style="{StaticResource Subtle}" Margin="0,0,0,12" />
+
+            <Label Text="{x:Static s:AppResources.Setup_FactoryName}" Style="{StaticResource SectionLabel}" />
+            <Entry Text="{Binding FactoryName}" MaxLength="80" Keyboard="Text" />
+
+            <Label Text="{x:Static s:AppResources.Setup_OwnerName}" Style="{StaticResource SectionLabel}" />
+            <Entry Text="{Binding OwnerName}" MaxLength="80" Keyboard="Text" />
+
+            <Label Text="{x:Static s:AppResources.Setup_Pin}" Style="{StaticResource SectionLabel}" />
+            <Entry Text="{Binding Pin}" MaxLength="4" Keyboard="Numeric" IsPassword="True" FontSize="28" />
+            <Label Text="{x:Static s:AppResources.Setup_ConfirmPin}" Style="{StaticResource SectionLabel}" />
+            <Entry Text="{Binding ConfirmPin}" MaxLength="4" Keyboard="Numeric" IsPassword="True" FontSize="28" />
+            <Label Text="{x:Static s:AppResources.Setup_PinHint}" Style="{StaticResource Subtle}" />
+
+            <Button Text="{x:Static s:AppResources.Setup_Start}" Command="{Binding StartCommand}" Margin="0,24,0,0" IsEnabled="{Binding IsBusy, Converter={StaticResource Not}}" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
